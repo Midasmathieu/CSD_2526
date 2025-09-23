@@ -16,6 +16,11 @@ x = 100
 y = 100
 vx = 100
 vy = 100
+ballx = 100
+bally = 100
+vBallx = -300
+vBally = 200
+stroal = 20
 
 clock = pygame.time.Clock()
 
@@ -24,8 +29,30 @@ delta_time = 0.1
 while running:
     screen.fill((0, 0, 0))
     screen.blit(ableton_img, (x, y))
+
+    ball = pygame.draw.circle(screen, (100, 100, 100), (ballx,bally), stroal)
     x += vx * delta_time
     y += vy * delta_time
+    ballx += vBallx * delta_time
+    bally += vBally * delta_time
+
+stroal = 20
+
+    if ballx > schermpje - stroal:
+        vBallx = vBallx * -1
+        stroal = 30
+
+    if ballx < stroal:
+        vBallx = vBallx * -1
+        stroal = 30
+
+    if bally > schermpje - stroal:
+        vBally = vBally * -1
+        stroal = 30
+
+    if bally < stroal:
+        vBally = vBally * -1
+        stroal = 30
 
     if x > schermpje - ableton_img.get_width():
         vx = vx * -1
