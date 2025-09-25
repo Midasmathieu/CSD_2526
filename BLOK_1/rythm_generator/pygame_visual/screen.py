@@ -36,23 +36,22 @@ while running:
     ballx += vBallx * delta_time
     bally += vBally * delta_time
 
-stroal = 20
 
     if ballx > schermpje - stroal:
         vBallx = vBallx * -1
-        stroal = 30
+        # stroal = 10
 
     if ballx < stroal:
         vBallx = vBallx * -1
-        stroal = 30
+        # stroal = 10
 
     if bally > schermpje - stroal:
         vBally = vBally * -1
-        stroal = 30
+        # stroal = 10
 
     if bally < stroal:
         vBally = vBally * -1
-        stroal = 30
+        # stroal = 10
 
     if x > schermpje - ableton_img.get_width():
         vx = vx * -1
