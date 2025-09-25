@@ -1,0 +1,18 @@
+Must have:
+simulation of a double pendulum in a for loop
+user imput to where the double pendulum starts (in π) and how long the pendulum swings (in seconds)
+kick snare and hihat mapped to the ends of each pendulum
+the option to quantize the rythm.
+the option to save the rythm as a midi file.
+
+should have:
+a way to detect the periodicity of a non chaotic pendulum and loop the rythm accordingly
+realtime pendulum with visualisation
+
+Could have:
+a way to navigate the non chaotic starting positions of the pendulum. (graph)
+easter egg to let the pendulum swing until you manually stop it
+velocity according to speed of the pendulums
+
+wont have:
+hardware pendulum with motors and stuff for theatrical effect
