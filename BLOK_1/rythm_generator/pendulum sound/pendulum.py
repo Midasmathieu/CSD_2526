@@ -17,22 +17,26 @@ time = time_seconds * 60
 
 r1 = 180
 r2 = 180
-m1 = 10
-m2 = 10
+m1 = 0.1
+m2 = 0.1
 a1_v = 0
 a2_v = 0
 a1_a = 0
 a2_a = 0
 g = 1
 
+pygame.mixer.pre_init(44100, -16, 2, 512)
 running = True
 clock = pygame.time.Clock()
 timer = 0
 screen = pygame.display.set_mode((windowWidth, windowHeight))
 preva1 = a1
 preva2 = a2
-x1 = 0
-prevx1 = 0
+x2 = 0
+prevx2 = x2
+kicksound = pygame.mixer.Sound('kick.mp3')
+snaresound = pygame.mixer.Sound('snare.mp3')
+hihatsound = pygame.mixer.Sound('hihat.mp3')
 
 # alles binnen while running wordt op loop uitgevoerdt.
 while running:
@@ -72,14 +76,22 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     # print(a1 % math.pi)
-    def crossing(angle, prevangle, drum):
-        if (angle % math.pi) > 3 and (prevangle % math.pi) < 0.5:
-            print(drum)
-        if (angle % math.pi) < 0.5 and (prevangle % math.pi) > 3:
-            print(drum)
+    def crossing(angle, prevangle, drumsound, min, max):
+        if (angle % math.pi) > max and (prevangle % math.pi) < min:
+            drumsound.play()
+        if (angle % math.pi) < min and (prevangle % math.pi) > max:
+            drumsound.play()
+    print(x2)
+    if x2 > 400 and prevx2 < 400:
+        snaresound.play()
+        print("hahadfsdhdfashkjldfjhkls")
+    if x2 < 400 and prevx2 > 400:
+        snaresound.play()
 
-    crossing(a1, preva1, "kick")
-    crossing(a2, preva2, "hat")
+    crossing(a1, preva1, kicksound, 0.2, 3.0)
+    crossing(a2, preva2, hihatsound, 0.2, 3.0)
+    crossing(x1, prevx2, snaresound, 0.2, 3.0)
+
 
     pygame.display.flip()
 
@@ -87,7 +99,7 @@ while running:
     timer = timer + 1
     preva1 = a1
     preva2 = a2
-    prevx1 = x1
+    prevx2 = x2
     # print(a1 % math.pi)
 
     if timer > time:
