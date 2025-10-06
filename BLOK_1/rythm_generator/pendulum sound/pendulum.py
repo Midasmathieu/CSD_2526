@@ -15,6 +15,10 @@ a2 = degrees2 * math.pi / 180
 time_seconds = float(input("how long do you want the double pendulum to run in seconds"))
 time = time_seconds * 60
 
+kick = []
+snare = []
+hihat = []
+
 r1 = 180
 r2 = 180
 m1 = 0.1
@@ -24,15 +28,19 @@ a2_v = 0
 a1_a = 0
 a2_a = 0
 g = 1
+x1 = r1 * math.sin(a1) + xZero
+y1 = r1 * math.cos(a1) + yZero
+x2 = x1 + r2 * math.sin(a2)
+y2 = y1 + r2 * math.cos(a2)
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.set_num_channels(16)
 running = True
 clock = pygame.time.Clock()
 timer = 0
 screen = pygame.display.set_mode((windowWidth, windowHeight))
 preva1 = a1
 preva2 = a2
-x2 = 0
 prevx2 = x2
 kicksound = pygame.mixer.Sound('kick.mp3')
 snaresound = pygame.mixer.Sound('snare.mp3')
@@ -49,9 +57,9 @@ while running:
     line2 = pygame.draw.line(screen, (150, 150, 150), (x1, y1), (x2, y2))
     ball1 = pygame.draw.circle(screen, (100, 100, 100), (x1, y1), m1)
     ball2 = pygame.draw.circle(screen, (100, 0, 100), (x2, y2), m2)
-    a1 = a1 + a1_v
+    a1 = (a1 + a1_v) % (2 * math.pi)
     a1_v = a1_v + a1_a
-    a2 = a2 + a2_v
+    a2 = (a2 + a2_v) % (2 * math.pi)
     a2_v = a2_v + a2_a
     a1_v = a1_v * 0.995
     a2_v = a2_v * 0.995
@@ -76,21 +84,30 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     # print(a1 % math.pi)
-    def crossing(angle, prevangle, drumsound, min, max):
-        if (angle % math.pi) > max and (prevangle % math.pi) < min:
-            drumsound.play()
-        if (angle % math.pi) < min and (prevangle % math.pi) > max:
-            drumsound.play()
-    print(x2)
-    if x2 > 400 and prevx2 < 400:
-        snaresound.play()
-        print("hahadfsdhdfashkjldfjhkls")
-    if x2 < 400 and prevx2 > 400:
-        snaresound.play()
 
-    crossing(a1, preva1, kicksound, 0.2, 3.0)
-    crossing(a2, preva2, hihatsound, 0.2, 3.0)
-    crossing(x1, prevx2, snaresound, 0.2, 3.0)
+    # plays a sound when crossing a certain point:
+    # TODO: Append lists in crossing function.
+    #       Wewrite if statement to be able to use the snare sound
+    def crossing(angle, prevangle, drumsound, min, max, list):
+        if angle > max and prevangle < min:
+            drumsound.play()
+            list.append(timer)
+        if angle < min and prevangle > max:
+            drumsound.play()
+            list.append(timer)
+
+# TODO: collision detection - maakgwneenbalaan. maak markdown bestanden
+
+
+    # if x2 > 400 and prevx2 < 400:
+    #     snaresound.play()
+    #     print("hahadfsdhdfashkjldfjhkls")
+    # if x2 < 400 and prevx2 > 400:
+    #     snaresound.play()
+
+    crossing(a1, preva1, kicksound, 0.2, 3.0, kick)
+    crossing(a2, preva2, hihatsound, 0.2, 3.0, hihat)
+    crossing(x2, prevx2, snaresound, xZero, xZero, snare)
 
 
     pygame.display.flip()
@@ -100,13 +117,40 @@ while running:
     preva1 = a1
     preva2 = a2
     prevx2 = x2
+
     # print(a1 % math.pi)
 
     if timer > time:
         running = False
 
+pygame.quit()
+print
+print("kick: ", kick)
+print("snare: ", snare)
+print("hihat: ", hihat)
 
+actualKick = []
+actualSnare = []
+actualHihat = []
+
+# print(kick[0])
+firstHit = [kick[0], snare[0], hihat[0]]
+firstHit.sort()
+
+# removes the silent time before the sequence
+for f in range(0, len(kick)):
+    actualKick.append(kick[f] - firstHit[0])
+for g in range(0, len(snare)):
+    actualSnare.append(snare[g] - firstHit[0])
+for h in range(0, len(hihat)):
+    actualHihat.append(hihat[h] - firstHit[0])
 
 pygame.quit()
+print("actualkick: ", actualKick)
+print("actualsnare: ", actualSnare)
+print("actualhihat: ", actualHihat)
 
-# next_step = input("DOYAWANNATEEKDANEXTSTEP? ")
+kickSnare = actualKick + actualSnare
+kickSnare.sort()
+
+print(kickSnare)
