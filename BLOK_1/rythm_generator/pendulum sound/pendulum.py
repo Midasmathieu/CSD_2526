@@ -132,6 +132,7 @@ print("hihat: ", hihat)
 actualKick = []
 actualSnare = []
 actualHihat = []
+offSetList = []
 
 # print(kick[0])
 firstHit = [kick[0], snare[0], hihat[0]]
@@ -153,4 +154,37 @@ print("actualhihat: ", actualHihat)
 kickSnare = actualKick + actualSnare
 kickSnare.sort()
 
-print(kickSnare)
+
+# TODO: make option to overwrite time signature
+for i in range(3, 23, 2):
+
+    # defines the duration of one beat on the grid
+    totalOffSet = 0
+    beat = (time - firstHit[0])/i
+    grid = []
+
+    # makes a grid in an array
+    for j in range(0, i):
+        grid.append(beat * j)
+
+    # calculates how much the kick deviates from the grid to later choose the smallest offset
+    for drumhit in kickSnare:
+
+        offSet = []
+        for count in grid:
+            #makes list of all offsets from one drumhit to every beat
+            offSet.append(abs(drumhit - count))
+        #chooses the smallest offset to calculate the total offset of one grid
+        totalOffSet = totalOffSet + min(offSet)
+
+    offSetList.append(totalOffSet)
+
+
+print(offSetList)
+
+smallest = min(offSetList)
+print("whooooooo:", smallest)
+timeSig = offSetList.index(smallest)*2+3
+print("timesig = ", timeSig)
+beatDur = time/timeSig
+print(beatDur)
