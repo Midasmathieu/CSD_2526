@@ -182,10 +182,9 @@ for currentOffSet in offSetList:
 
 print("biasedOffSetList to check best timesig: ", biasedOffSetList)
 
-#TODO: apply an formula to the
 smallest = min(biasedOffSetList)
 print("whooooooo:", smallest)
-timeSig = offSetList.index(smallest)*2+3
+timeSig = biasedOffSetList.index(smallest) * 2 + 3
 print("timesig = ", timeSig)
 
 #TODO: make option for user to overwrite the timeSig
@@ -196,7 +195,7 @@ print(beatDur)
 actualGrid = []
 for l in range(0, timeSig):
     actualGrid.append(beatDur * l)
-
+print("here come the warm girds: ", actualGrid)
 
 def find_closest_num(number, grid):
     #absolute value of all offsets in a list
@@ -235,13 +234,16 @@ def quantizeList(list, gridList):
     quantizedList = []
     for hit in list:
         # find the closest beat:
-        closestbeat, actualOffSet = find_closest_num(drumHit, grid)
-        quantizedList.append(hit + actualOffSet)
+        closestBeat, actualOffSet = find_closest_num(hit, gridList)
+        print("this is the closest beat: ", closestBeat)
+        quantizedList.append(closestBeat)
     return quantizedList
 
 # using the function above to quantize the kick snare and hihat
 quantizedKick = quantizeList(actualKick, actualGrid)
-# quantizeList(actualSnare, actualGrid, quantizedSnare)
-# quantizeList(actualHihat, actualGrid, quantizedHihat)
+quantizedSnare = quantizeList(actualSnare, actualGrid)
+quantizedHihat = quantizeList(actualHihat, actualGrid)
 
 print("hey boss here is the quantized kick: ", quantizedKick)
+print("hey boss here is the quantized snare: ", quantizedSnare)
+print("hey boss here is the quantized hat: ", quantizedHihat)
