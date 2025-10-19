@@ -70,14 +70,14 @@ kitOptions = ['de ãtechre', 'dark vibes dud\n']
 selectedKit = UIFunctions.retrieveUserOption(kitQuestion, kitOptions)
 
 if selectedKit == "de ãtechre":
-    kicksSound = pygame.mixer.Sound('kick.mp3')
-    snaresSound = pygame.mixer.Sound('snare.mp3')
-    hihatsSound = pygame.mixer.Sound('hihat.mp3')
+    kickSound = pygame.mixer.Sound('kick.mp3')
+    snareSound = pygame.mixer.Sound('snare.mp3')
+    hihatSound = pygame.mixer.Sound('hihat.mp3')
 
 else:
-    kicksSound = pygame.mixer.Sound('dark_kick.mp3')
-    snaresSound = pygame.mixer.Sound('dark_snare.mp3')
-    hihatsSound = pygame.mixer.Sound('dark_hat.mp3')
+    kickSound = pygame.mixer.Sound('dark_kick.mp3')
+    snareSound = pygame.mixer.Sound('dark_snare.mp3')
+    hihatSound = pygame.mixer.Sound('dark_hat.mp3')
 
 timeQuestion = 'How long do you want the pendulum to swing in seconds?\n 2 to 7 seconds. (default = 4 seconds)\n'
 secondsRunning = UIFunctions.retrieveUserInput(2, 7, 4, timeQuestion, generalError, ' seconds it is!\n')
@@ -108,9 +108,9 @@ while running == True:
     pendulum.calculatePendulumPos(pendulumDict)
     pendulum.pendulumDraw(pendulumDict, screen)
     pendulum.calculatePendulumAngle(pendulumDict, klokje)
-    pendulum.crossing(pendulumDict.get('a1'), pendulumDict.get('prevA1'), kicksSound, 0.5, 2.6, kicks, pendulumDict.get('a1_v'), velocityList, timer)
-    pendulum.crossing(pendulumDict.get('a2'), pendulumDict.get('prevA2'), hihatsSound, 0.5, 2.6, hihats, pendulumDict.get('a2_v'), velocityList, timer)
-    pendulum.crossing(pendulumDict.get('x2'), pendulumDict.get('prevX2'), snaresSound, pendulumDict.get('xZero'), pendulumDict.get('xZero'), snares, pendulumDict.get('a2_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('a1'), pendulumDict.get('prevA1'), kickSound, 0.5, 2.6, kicks, pendulumDict.get('a1_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('a2'), pendulumDict.get('prevA2'), hihatSound, 0.5, 2.6, hihats, pendulumDict.get('a2_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('x2'), pendulumDict.get('prevX2'), snareSound, pendulumDict.get('xZero'), pendulumDict.get('xZero'), snares, pendulumDict.get('a2_v'), velocityList, timer)
     pendulum.pendulumHistory(pendulumDict)
 
 pygame.quit()
@@ -188,6 +188,21 @@ def beatsToTimeStamp(BPM, sequence):
         timeStampList.append(timeStamp)
     return timeStampList
 
+def listsToDictionary(list, sampleName):
+    for number in list:
+        drums.append({
+            'sound': sampleName,
+            'currentFrameTime': number
+    })
+
+def getCurrentFrameTime(drums):
+    return drums["currentFrameTime"]
+
+def handle_note_event(sample, velocity):
+    print(sample)
+    sample.set_volume(velocity / 127.0)
+    sample.play()
+
 measure = findSilence(kicks, snares, hihats, secondsRunning)
 beatsInTimeSig = retrieveBeatsInTimesig(signatureOptions, selectedSignature)
 grid, beatDur = createGrid(measure, beatsInTimeSig)
@@ -196,11 +211,74 @@ quantizedKicks = quantizeList(kicks, grid)
 quantizedSnares = quantizeList(snares, grid)
 quantizedHihats = quantizeList(hihats, grid)
 kickBeats = timeSigToBeats(quantizedKicks, beatDur)
-kickTimeStamp = beatsToTimeStamp(selectedBPM, quantizedKicks)
+snareBeats = timeSigToBeats(quantizedSnares, beatDur)
+hihatBeats = timeSigToBeats(quantizedHihats, beatDur)
+kickTimeStamps = beatsToTimeStamp(selectedBPM, quantizedKicks)
+snareTimeStamps = beatsToTimeStamp(selectedBPM, quantizedSnares)
+hihatTimeStamps = beatsToTimeStamp(selectedBPM, quantizedHihats)
 
-print('kicks: ', kicks)
-print('sners: ', snares)
-print('hihats: ', hihats)
-print('quantizedKicks: ', quantizedKicks)
-print('kickbeats: ', kickBeats)
-print('timestampKicks:', kickTimeStamp)
+drums = []
+listsToDictionary(kickTimeStamps, kickSound)
+listsToDictionary(snareTimeStamps, snareSound)
+listsToDictionary(hihatTimeStamps, hihatSound)
+drums.sort(key=getCurrentFrameTime)
+
+for drum in drums:
+    # print(drum)
+    drum['velocity'] = velocityList[drums.index(drum)]
+
+print('drums: ', drums)
+
+
+onemoretime = input("hey booosss do you want to hear that #onemoretime??... yes or no boosssss...")
+pygame.init()
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.set_num_channels(16)
+
+drumscopy = drums
+
+# TODO: make duplicates of drums with the total length of the loop added once twice -
+#  or thrice to the timestamps, then add the lists and play them.
+
+#also put the functions for the quantization in a seperate bestand and put useful comments everywhere,
+#  GOOD LUCK :))) DON'T FUCKING GET DESTRACTED HAHAHAHAHAHAHAHAHAH
+
+#playing stuff lolz
+
+if onemoretime == "yes":
+    running = True
+    sampleSound = drumscopy[0].get('sound')
+    sampleVelocity = drumscopy[0].get('velocity')
+    ts = drumscopy.pop(0).get('currentFrameTime')
+    handle_note_event(sampleSound, sampleVelocity)
+else:
+    running = False
+
+time_zero = t.time()
+
+while running == True:
+
+    currentTime = t.time() - time_zero
+    if (currentTime > ts):
+        handle_note_event(sampleSound, sampleVelocity)
+        if drumscopy:
+            # ts = drums[0].get('currentFrameTime')
+            sampleSound = drumscopy[0].get('sound')
+            sampleVelocity = drumscopy[0].get('velocity')
+            ts = drumscopy.pop(0).get('currentFrameTime')
+            # print(drums[0].get('currentFrameTime'))
+        else:
+            print(drums)
+            break
+
+
+
+
+# print('kicks: ', kicks)
+# print('sners: ', snares)
+# print('hihats: ', hihats)
+# print('quantizedKicks: ', quantizedKicks)
+# print('kickbeats: ', kickBeats)
+# print('timestampKicks:', kickTimeStamps)
+# print('timestampSnares:', snareTimeStamps)
+# print('timestampHats:', hihatTimeStamps)
