@@ -42,9 +42,9 @@ yZero = (windowHeight / 5) * 2
 pendulumDict['yZero'] = yZero
 
 
-kick = []
-snare = []
-hihat = []
+kicks = []
+snares = []
+hihats = []
 velocityList = []
 
 generalError = 'oh oh error, try again...'
@@ -70,18 +70,17 @@ kitOptions = ['de ãtechre', 'dark vibes dud\n']
 selectedKit = UIFunctions.retrieveUserOption(kitQuestion, kitOptions)
 
 if selectedKit == "de ãtechre":
-    kickSound = pygame.mixer.Sound('kick.mp3')
-    snareSound = pygame.mixer.Sound('snare.mp3')
-    hihatSound = pygame.mixer.Sound('hihat.mp3')
+    kicksSound = pygame.mixer.Sound('kick.mp3')
+    snaresSound = pygame.mixer.Sound('snare.mp3')
+    hihatsSound = pygame.mixer.Sound('hihat.mp3')
 
 else:
-    kickSound = pygame.mixer.Sound('dark_kick.mp3')
-    snareSound = pygame.mixer.Sound('dark_snare.mp3')
-    hihatSound = pygame.mixer.Sound('dark_hat.mp3')
+    kicksSound = pygame.mixer.Sound('dark_kick.mp3')
+    snaresSound = pygame.mixer.Sound('dark_snare.mp3')
+    hihatsSound = pygame.mixer.Sound('dark_hat.mp3')
 
 timeQuestion = 'How long do you want the pendulum to swing in seconds?\n 2 to 7 seconds. (default = 4 seconds)\n'
 secondsRunning = UIFunctions.retrieveUserInput(2, 7, 4, timeQuestion, generalError, ' seconds it is!\n')
-print('secondsrunning: ', secondsRunning)
 
 #GAMELOOP!
 timer = 0
@@ -101,7 +100,6 @@ while running == True:
     if timer > secondsRunning:
         running = False
 
-    print('timerout:', timer)
     # if timer > secondsRunning:
     #     running = False
 
@@ -110,12 +108,11 @@ while running == True:
     pendulum.calculatePendulumPos(pendulumDict)
     pendulum.pendulumDraw(pendulumDict, screen)
     pendulum.calculatePendulumAngle(pendulumDict, klokje)
-    pendulum.crossing(pendulumDict.get('a1'), pendulumDict.get('prevA1'), kickSound, 0.5, 2.6, kick, pendulumDict.get('a1_v'), velocityList, timer)
-    pendulum.crossing(pendulumDict.get('a2'), pendulumDict.get('prevA2'), hihatSound, 0.5, 2.6, hihat, pendulumDict.get('a2_v'), velocityList, timer)
-    pendulum.crossing(pendulumDict.get('x2'), pendulumDict.get('prevX2'), snareSound, pendulumDict.get('xZero'), pendulumDict.get('xZero'), snare, pendulumDict.get('a2_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('a1'), pendulumDict.get('prevA1'), kicksSound, 0.5, 2.6, kicks, pendulumDict.get('a1_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('a2'), pendulumDict.get('prevA2'), hihatsSound, 0.5, 2.6, hihats, pendulumDict.get('a2_v'), velocityList, timer)
+    pendulum.crossing(pendulumDict.get('x2'), pendulumDict.get('prevX2'), snaresSound, pendulumDict.get('xZero'), pendulumDict.get('xZero'), snares, pendulumDict.get('a2_v'), velocityList, timer)
     pendulum.pendulumHistory(pendulumDict)
 
-print(velocityList)
 pygame.quit()
 
 signatureQuestion = "what time signature do you want to quantize that to?"
@@ -124,10 +121,30 @@ selectedSignature = UIFunctions.retrieveUserOption(signatureQuestion, signatureO
 BPMQuestion = 'How fast do you want to play it back? Enter BPM... (default = 120)\n'
 selectedBPM = UIFunctions.retrieveUserInput(60, 220, 120, BPMQuestion, generalError, 'Beats per minute it is!\n')
 
+def removeSilence(sequence, silence):
+    index = 0
+    for note in sequence:
+        noteMinSilence = note - silence
+        sequence[index] = noteMinSilence
+        index = index + 1
+        return sequence
+
+
+def findSilence(kicks, snares, hihats, duration):
+    firstHitList = [kicks[0], snares[0], hihats[0]]
+    firstHitList.sort()
+    firstHit = firstHitList[0]
+    # removes the silent teim before the sequence
+    removeSilence(kicks, firstHit)
+    removeSilence(snares, firstHit)
+    removeSilence(hihats, firstHit)
+    measureDur = duration - firstHit
+    return measureDur
+
+
 def retrieveBeatsInTimesig(signatureList, signature):
     index = signatureList.index(signature)
     beatsInTimeSig = index * 2 + 5
-    print(beatsInTimeSig)
     return beatsInTimeSig
 
 def createGrid(bar, beatsInTimeSig):
@@ -135,29 +152,55 @@ def createGrid(bar, beatsInTimeSig):
     grid = []
     for count in range(beatsInTimeSig):
         grid.append(count * beatDur)
-    print(grid)
+    # print(grid)
+    return grid, beatDur
 
 # found this here no clue how it works.. https://www.geeksforgeeks.org/python/python-find-closest-number-to-k-in-given-list/
 
-#TODO: quantization does not yet work, fix it!
 def closest(lst, K):
     closestBeat = lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]
-    offSet = K - closestBeat
-    return closestBeat, offSet
+    return closestBeat
 
 def quantizeList(list, gridList):
     quantizedList = []
+    print('gridlist: ', gridList)
     for hit in list:
         # find the closest beat:
-        closestBeat, offSet = closest(list, hit)
+        quantizedHit = closest(gridList, hit)
+        # print('hit: ', hit, 'closestbeat: ', closestBeat, 'offSet: ', offSet, 'quantizedHit: ', quantizedHit)
         # print("this is the closest beat: ", closestBeat)
-        quantizedList.append(closestBeat - offSet)
+        quantizedList.append(quantizedHit)
     return quantizedList
 
+def timeSigToBeats(timeList, beatDur):
+    beatsList = []
+    for time in timeList:
+        beat = time / beatDur
+        beatsList.append(beat)
+    return beatsList
 
+def beatsToTimeStamp(BPM, sequence):
+    beatDur = 60 / BPM
+    print('beatDur: ', beatDur)
+    timeStampList = []
+    for hit in sequence:
+        timeStamp = hit * beatDur
+        timeStampList.append(timeStamp)
+    return timeStampList
 
+measure = findSilence(kicks, snares, hihats, secondsRunning)
 beatsInTimeSig = retrieveBeatsInTimesig(signatureOptions, selectedSignature)
-grid = createGrid(secondsRunning, beatsInTimeSig)
-quantizedKick = quantizeList(kick, grid)
-print(kick)
-print(quantizedKick)
+grid, beatDur = createGrid(measure, beatsInTimeSig)
+print('grid: ', grid)
+quantizedKicks = quantizeList(kicks, grid)
+quantizedSnares = quantizeList(snares, grid)
+quantizedHihats = quantizeList(hihats, grid)
+kickBeats = timeSigToBeats(quantizedKicks, beatDur)
+kickTimeStamp = beatsToTimeStamp(selectedBPM, quantizedKicks)
+
+print('kicks: ', kicks)
+print('sners: ', snares)
+print('hihats: ', hihats)
+print('quantizedKicks: ', quantizedKicks)
+print('kickbeats: ', kickBeats)
+print('timestampKicks:', kickTimeStamp)
