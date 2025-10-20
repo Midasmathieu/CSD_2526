@@ -2,7 +2,7 @@
 import math
 import pygame
 
-
+# calculates the position of the pendulum rods using the angles
 def calculatePendulumPos(pendulumDict):
     r1 = float(pendulumDict.get('r1'))
     r2 = float(pendulumDict.get('r2'))
@@ -20,6 +20,7 @@ def calculatePendulumPos(pendulumDict):
     pendulumDict['y2'] = y2
     return 0
 
+# draws the pendulum using pygames draw features
 def pendulumDraw(pendulumDict, screen):
     xZero = int(pendulumDict.get('xZero'))
     yZero = int(pendulumDict.get('yZero'))
@@ -33,6 +34,8 @@ def pendulumDraw(pendulumDict, screen):
     pygame.display.flip()
     return 0
 
+# calculaates the angle of the pendulum using langrangian formula
+# (this is where the math is at yo)
 def calculatePendulumAngle(pendulumDict, deltaTime):
     m1 = float(pendulumDict.get('m1'))
     m2 = float(pendulumDict.get('m2'))
@@ -54,6 +57,7 @@ def calculatePendulumAngle(pendulumDict, deltaTime):
     a2_v = a2_v + a2_a
     a1_v = a1_v * 0.995
     a2_v = a2_v * 0.995
+
 # pendulum formula implementation credits: coding thecodingtrain: https://thecodingtrain.com/challenges/93-double-pendulum
     num1 = -g * (2 * m1 + m2) * math.sin(a1)
     num2 = -m2 * g * math.sin(a1 - 2 * a2)
@@ -77,6 +81,7 @@ def calculatePendulumAngle(pendulumDict, deltaTime):
     pendulumDict['a2'] = a2
     return pendulumDict
 
+# keeps history of pendulum to know where the pendulum is
 def pendulumHistory(pendulumDict):
     a1 = float(pendulumDict.get('a1'))
     a2 = float(pendulumDict.get('a2'))
@@ -87,7 +92,7 @@ def pendulumHistory(pendulumDict):
     return a1, a2, x2
 
 
-
+# checks if the pendulum crosses a certain point, plays sound and appends info to lists
 def crossing(angle, prevangle, drumsound, min, max, list, angleVelocity, velocityList, timer):
     if angle > max and prevangle < min or angle < min and prevangle > max:
         # drumsound.play()
@@ -99,7 +104,7 @@ def crossing(angle, prevangle, drumsound, min, max, list, angleVelocity, velocit
         list.append(timer)
 
 
-
+# plays a sound
 def playNote(sample, velocity):
     sample.set_volume(velocity / 127.0)
     sample.play()
