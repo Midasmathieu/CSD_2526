@@ -4,6 +4,109 @@ import time as t
 import pendulumFunctions as pendulum
 import UIFunctions
 
+def removeSilence(sequence, silence):
+    index = 0
+    for note in sequence:
+        noteMinSilence = note - silence
+        sequence[index] = noteMinSilence
+        index = index + 1
+        return sequence
+
+
+def findSilence(kicks, snares, hihats, duration):
+    firstHitList = [kicks[0], snares[0], hihats[0]]
+    firstHitList.sort()
+    firstHit = firstHitList[0]
+    # removes the silent teim before the sequence
+    removeSilence(kicks, firstHit)
+    removeSilence(snares, firstHit)
+    removeSilence(hihats, firstHit)
+    measureDur = duration - firstHit
+    return measureDur
+
+
+def retrieveBeatsInTimesig(signatureList, signature):
+    index = signatureList.index(signature)
+    beatsInTimeSig = index * 2 + 5
+    return beatsInTimeSig
+
+def createGrid(bar, beatsInTimeSig):
+    beatDur = bar / beatsInTimeSig
+    grid = []
+    for count in range(beatsInTimeSig):
+        grid.append(count * beatDur)
+    # print(grid)
+    return grid, beatDur
+
+# found this here no clue how it works.. https://www.geeksforgeeks.org/python/python-find-closest-number-to-k-in-given-list/
+
+def closest(lst, K):
+    closestBeat = lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]
+    return closestBeat
+
+def quantizeList(list, gridList):
+    quantizedList = []
+    # print('gridlist: ', gridList)
+    for hit in list:
+        # find the closest beat:
+        quantizedHit = closest(gridList, hit)
+        # print('hit: ', hit, 'closestbeat: ', closestBeat, 'offSet: ', offSet, 'quantizedHit: ', quantizedHit)
+        # print("this is the closest beat: ", closestBeat)
+        quantizedList.append(quantizedHit)
+    return quantizedList
+
+def timeSigToBeats(timeList, beatDur):
+    beatsList = []
+    for time in timeList:
+        beat = time / beatDur
+        beatsList.append(beat)
+    # print('this is the beatlist', beatsList)
+    return beatsList
+
+def beatsToTimeStamp(BPM, sequence):
+    beatDur = 60 / BPM
+    # print('beatDur: ', beatDur)
+    timeStampList = []
+    for hit in sequence:
+        timeStamp = hit * beatDur
+        timeStampList.append(timeStamp)
+    return timeStampList
+
+def listsToDictionary(list, sampleName, drums):
+    for number in list:
+        drums.append({
+            'sound': sampleName,
+            'currentFrameTime': number
+    })
+
+def getCurrentFrameTime(drums):
+    return drums["currentFrameTime"]
+
+
+def calculateTimeDur(BPM, timeSig):
+    beatDur = 60 / BPM
+    # print('timesig: ', timeSig)
+    sequenceDur = ((timeSig - 2) * beatDur) / 2
+    doubleSequenceDur = sequenceDur * 2
+    tripleSequenceDur = sequenceDur * 3
+    return sequenceDur, doubleSequenceDur, tripleSequenceDur
+
+#make the playbacklist first in normal lists
+
+def makePlayBackList(list, timeDur):
+    secondList = []
+    for hit in list:
+        secondListHit = hit + timeDur
+        secondList.append(secondListHit)
+    return secondList
+
+def removeDuplicates(list):
+    newList = []
+    for number in list:
+        if number not in newList:
+            newList.append(number)
+    return newList
+
 pygame.init()
 windowWidth = 800
 windowHeight = 800
@@ -112,7 +215,7 @@ while running == True:
     pendulum.crossing(pendulumDict.get('a2'), pendulumDict.get('prevA2'), hihatSound, 0.5, 2.6, hihats, pendulumDict.get('a2_v'), velocityList, timer)
     pendulum.crossing(pendulumDict.get('x2'), pendulumDict.get('prevX2'), snareSound, pendulumDict.get('xZero'), pendulumDict.get('xZero'), snares, pendulumDict.get('a2_v'), velocityList, timer)
     pendulum.pendulumHistory(pendulumDict)
-
+t.sleep(0.50)
 pygame.quit()
 
 signatureQuestion = "what time signature do you want to quantize that to?"
@@ -121,92 +224,27 @@ selectedSignature = UIFunctions.retrieveUserOption(signatureQuestion, signatureO
 BPMQuestion = 'How fast do you want to play it back? Enter BPM... (default = 120)\n'
 selectedBPM = UIFunctions.retrieveUserInput(60, 220, 120, BPMQuestion, generalError, 'Beats per minute it is!\n')
 
-def removeSilence(sequence, silence):
-    index = 0
-    for note in sequence:
-        noteMinSilence = note - silence
-        sequence[index] = noteMinSilence
-        index = index + 1
-        return sequence
 
 
-def findSilence(kicks, snares, hihats, duration):
-    firstHitList = [kicks[0], snares[0], hihats[0]]
-    firstHitList.sort()
-    firstHit = firstHitList[0]
-    # removes the silent teim before the sequence
-    removeSilence(kicks, firstHit)
-    removeSilence(snares, firstHit)
-    removeSilence(hihats, firstHit)
-    measureDur = duration - firstHit
-    return measureDur
+# def makePlayBackList(list, timeDur):
+#     firstList = copy.deepcopy(list, 1)
+#     print('playBackList1: ', firstList, '\n\n')
+#     listLooped = copy.deepcopy(list, 2)
+#     for hit in listLooped:
+#         print('hitframetime: ', hit['currentFrameTime'])
+#         hit['currentFrameTime'] = hit['currentFrameTime'] + timeDur
+#         print('hitframetime2: ', hit['currentFrameTime'])
+#     print('playBackList2: ', firstList, '\n\n')
+#     playBackList = firstList + listLooped
+#     print('listLooped: ', listLooped, '\n\n')
+#     print('finallist: ', playBackList, '\n\n')
+#     return playBackList
 
-
-def retrieveBeatsInTimesig(signatureList, signature):
-    index = signatureList.index(signature)
-    beatsInTimeSig = index * 2 + 5
-    return beatsInTimeSig
-
-def createGrid(bar, beatsInTimeSig):
-    beatDur = bar / beatsInTimeSig
-    grid = []
-    for count in range(beatsInTimeSig):
-        grid.append(count * beatDur)
-    # print(grid)
-    return grid, beatDur
-
-# found this here no clue how it works.. https://www.geeksforgeeks.org/python/python-find-closest-number-to-k-in-given-list/
-
-def closest(lst, K):
-    closestBeat = lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]
-    return closestBeat
-
-def quantizeList(list, gridList):
-    quantizedList = []
-    print('gridlist: ', gridList)
-    for hit in list:
-        # find the closest beat:
-        quantizedHit = closest(gridList, hit)
-        # print('hit: ', hit, 'closestbeat: ', closestBeat, 'offSet: ', offSet, 'quantizedHit: ', quantizedHit)
-        # print("this is the closest beat: ", closestBeat)
-        quantizedList.append(quantizedHit)
-    return quantizedList
-
-def timeSigToBeats(timeList, beatDur):
-    beatsList = []
-    for time in timeList:
-        beat = time / beatDur
-        beatsList.append(beat)
-    return beatsList
-
-def beatsToTimeStamp(BPM, sequence):
-    beatDur = 60 / BPM
-    print('beatDur: ', beatDur)
-    timeStampList = []
-    for hit in sequence:
-        timeStamp = hit * beatDur
-        timeStampList.append(timeStamp)
-    return timeStampList
-
-def listsToDictionary(list, sampleName):
-    for number in list:
-        drums.append({
-            'sound': sampleName,
-            'currentFrameTime': number
-    })
-
-def getCurrentFrameTime(drums):
-    return drums["currentFrameTime"]
-
-def handle_note_event(sample, velocity):
-    print(sample)
-    sample.set_volume(velocity / 127.0)
-    sample.play()
 
 measure = findSilence(kicks, snares, hihats, secondsRunning)
 beatsInTimeSig = retrieveBeatsInTimesig(signatureOptions, selectedSignature)
 grid, beatDur = createGrid(measure, beatsInTimeSig)
-print('grid: ', grid)
+# print('grid: ', grid)
 quantizedKicks = quantizeList(kicks, grid)
 quantizedSnares = quantizeList(snares, grid)
 quantizedHihats = quantizeList(hihats, grid)
@@ -216,21 +254,65 @@ hihatBeats = timeSigToBeats(quantizedHihats, beatDur)
 kickTimeStamps = beatsToTimeStamp(selectedBPM, quantizedKicks)
 snareTimeStamps = beatsToTimeStamp(selectedBPM, quantizedSnares)
 hihatTimeStamps = beatsToTimeStamp(selectedBPM, quantizedHihats)
+sequenceDur, doubleSequenceDur, tripleSequenceDur = calculateTimeDur(selectedBPM, beatsInTimeSig)
+# print('sequencedur:    ', sequenceDur)
+secondKickTimeStamps = makePlayBackList(kickTimeStamps, sequenceDur)
+thirdKickTimeStamps = makePlayBackList(kickTimeStamps, doubleSequenceDur)
+fourthKickTimeStamps = makePlayBackList(kickTimeStamps, tripleSequenceDur)
+
+secondSnareTimeStamps = makePlayBackList(snareTimeStamps, sequenceDur)
+thirdSnareTimeStamps = makePlayBackList(snareTimeStamps, doubleSequenceDur)
+fourthSnareTimeStamps = makePlayBackList(snareTimeStamps, tripleSequenceDur)
+
+secondHihatTimeStamps = makePlayBackList(hihatTimeStamps, sequenceDur)
+thirdHihatTimeStamps = makePlayBackList(hihatTimeStamps, doubleSequenceDur)
+fourthHihatTimeStamps = makePlayBackList(hihatTimeStamps, tripleSequenceDur)
+
+
+twoKickTimeStamps = kickTimeStamps + secondKickTimeStamps + thirdKickTimeStamps + fourthKickTimeStamps
+twoSnareTimeStamps = snareTimeStamps + secondSnareTimeStamps + thirdSnareTimeStamps + fourthSnareTimeStamps
+twoHihatTimeStamps = hihatTimeStamps + secondHihatTimeStamps + thirdHihatTimeStamps + fourthHihatTimeStamps
+
+finalKickTimeStamps = removeDuplicates(twoKickTimeStamps)
+finalSnareTimeStamps = removeDuplicates(twoSnareTimeStamps)
+finalHihatTimeStamps = removeDuplicates(twoHihatTimeStamps)
+
+
+# print('sequenceDur: ', sequenceDur)
 
 drums = []
-listsToDictionary(kickTimeStamps, kickSound)
-listsToDictionary(snareTimeStamps, snareSound)
-listsToDictionary(hihatTimeStamps, hihatSound)
+
+# listsToDictionary(kickTimeStamps, kickSound, drums)
+# listsToDictionary(snareTimeStamps, snareSound, drums)
+# listsToDictionary(hihatTimeStamps, hihatSound, drums)
+listsToDictionary(finalKickTimeStamps, kickSound, drums)
+listsToDictionary(finalSnareTimeStamps, snareSound, drums)
+listsToDictionary(finalHihatTimeStamps, hihatSound, drums)
+
+
+# print('drums: ', drums)
+# velocityList2 = velocityList.copy()
+# totalVelocityList = velocityList + velocityList2
+# print('velocitylist2: ', totalVelocityList)
+#
+# for drum in drums:
+#     # print(drum)
+#     drum['velocity'] = velocityList2[drums.index(drum)]
+
+
+# print('drums2: ', drums2, '\n\n')
+#
+# secondKickTimeStamps = makePlayBackList(kickTimeStamps, sequenceDur)
+# secondSnareTimeStamps = makePlayBackList(snareTimeStamps, sequenceDur)
+# secondHihatTimeStamps = makePlayBackList(hihatTimeStamps, sequenceDur)
+
 drums.sort(key=getCurrentFrameTime)
 
-for drum in drums:
-    # print(drum)
-    drum['velocity'] = velocityList[drums.index(drum)]
+playAgainQuestion = "Do you want to play that again but quantized?"
+playAgainOptions = ['Yes', 'No']
+oneMoreTime = UIFunctions.retrieveUserOption(playAgainQuestion, playAgainOptions)
 
-print('drums: ', drums)
-
-
-onemoretime = input("hey booosss do you want to hear that #onemoretime??... yes or no boosssss...")
+# oneMoreTime = input("hey booosss do you want to hear that #oneMoreTime??... yes or no boosssss...")
 pygame.init()
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.set_num_channels(16)
@@ -245,12 +327,13 @@ drumscopy = drums
 
 #playing stuff lolz
 
-if onemoretime == "yes":
+if oneMoreTime == 'Yes':
     running = True
     sampleSound = drumscopy[0].get('sound')
-    sampleVelocity = drumscopy[0].get('velocity')
+    # sampleVelocity = drumscopy[0].get('velocity')
     ts = drumscopy.pop(0).get('currentFrameTime')
-    handle_note_event(sampleSound, sampleVelocity)
+    pendulum.playNote(sampleSound, 127)
+    # handle_note_event(sampleSound, sampleVelocity)
 else:
     running = False
 
@@ -259,18 +342,23 @@ time_zero = t.time()
 while running == True:
 
     currentTime = t.time() - time_zero
+    # print('time: ', currentTime)
     if (currentTime > ts):
-        handle_note_event(sampleSound, sampleVelocity)
+        pendulum.playNote(sampleSound, 127)
+        # print('note: ', currentTime)
+        # handle_note_event(sampleSound, sampleVelocity)
         if drumscopy:
             # ts = drums[0].get('currentFrameTime')
             sampleSound = drumscopy[0].get('sound')
-            sampleVelocity = drumscopy[0].get('velocity')
+            # sampleVelocity = drumscopy[0].get('velocity')
             ts = drumscopy.pop(0).get('currentFrameTime')
             # print(drums[0].get('currentFrameTime'))
         else:
-            print(drums)
+            # print(drums)
             break
 
+t.sleep(1.0)
+print('I hope that was irregular enough for you')
 
 
 
