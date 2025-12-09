@@ -1,0 +1,3 @@
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/isa/build/CMakeFiles/isa.dir
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/isa/build/CMakeFiles/edit_cache.dir
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/isa/build/CMakeFiles/rebuild_cache.dir

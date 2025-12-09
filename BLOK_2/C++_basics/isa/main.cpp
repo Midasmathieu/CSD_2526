@@ -12,6 +12,7 @@ int main() {
 
   aJbl.subDiameter = 5;
   aJbl.info();
+  aJbl.blast();
   //
   // aSpeaker.info();
   return 0;

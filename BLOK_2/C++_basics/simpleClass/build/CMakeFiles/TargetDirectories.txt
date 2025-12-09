@@ -1,0 +1,3 @@
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/simpleClass/build/CMakeFiles/simpleClass.dir
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/simpleClass/build/CMakeFiles/edit_cache.dir
+/Users/Midas/PROJECTEN/HKU/CSD_2526/BLOK_2/C++_basics/simpleClass/build/CMakeFiles/rebuild_cache.dir

@@ -4,6 +4,11 @@ class Synth{
 private:
   int freq = 0;
 
+  440*2^macht
+  int mtof(freq){
+
+  }
+
 public:
   void setFreq(float freq){
     if(freq < 12){
