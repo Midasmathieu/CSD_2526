@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 project(mySine VERSION 0.0.1)
 
 juce_add_console_app(mySine PRODUCT_NAME "mySine")
-target_sources(mySine PRIVATE main.cpp sine.cpp)
+target_sources(mySine PRIVATE main.cpp sine.cpp oscillator.cpp)
 target_compile_definitions(mySine PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
 
 target_link_libraries(mySine
