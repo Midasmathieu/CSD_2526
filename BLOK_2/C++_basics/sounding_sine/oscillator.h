@@ -12,7 +12,7 @@ public:
   void setSamplerate(float samplerate);
 
   float getSample();
-
+  void prepare(int samplerate);
   void setFrequency(float frequency);
   float getFrequency();
 

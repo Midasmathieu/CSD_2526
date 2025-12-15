@@ -25,9 +25,9 @@ struct CustomCallback : AudioCallback {
 
         outputChannels[channel][sample] = sine.getSample();
         float mod2 = lfo2.getSample();
-        lfo.setFrequency(2 + mod2 * 3);
+        lfo.setFrequency(220);
         float mod = lfo.getSample();
-        sine.setFrequency(660 + mod * 9999 + mod2 * -400);
+        sine.setFrequency(220);
         sine.tick();
         lfo.tick();
         lfo2.tick();
@@ -40,7 +40,7 @@ struct CustomCallback : AudioCallback {
   }
 
 private:
-  Sine lfo2{0.5};
+  Sine lfo2{1};
   Sine lfo{0.5};
   Sine sine{440};
 };

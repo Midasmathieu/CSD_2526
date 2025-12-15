@@ -15,7 +15,7 @@ public:
   // void tick();
 // protected:
   void calculate();
-
+  
   // void print();
   //
   // void setFrequency(float frequency);

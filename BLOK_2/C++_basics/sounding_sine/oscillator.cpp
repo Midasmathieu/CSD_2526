@@ -34,7 +34,7 @@ float Oscillator::getFrequency(){
 
 void Oscillator::tick(){
   phase += frequency / samplerate;
-  if(phase > 1.0f) {
-    phase -= 1.0f;
+  if(phase > 2.5f) {
+    phase -= 2.5f;
   }
 }
