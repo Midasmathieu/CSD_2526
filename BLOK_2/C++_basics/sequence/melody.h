@@ -26,7 +26,7 @@ private:
 
   int currentNoteFrameDuration;
 
-  const float bpm = 120.0f;
+  const float bpm = 30.0f;
 
   float quarterNoteFrameDur;
 

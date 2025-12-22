@@ -17,7 +17,14 @@ public:
 private:
   double samplerate;
   Sine sine;
-  double amplitude = 1.0;
+  Sine overtone1;
+  Sine overtone2;
+  Sine overtone3;
+  Sine overtone4;
+  Sine overtone5;
+  Sine overtone6;
+  Sine lfo;
+  double amplitude = 0.5;
   Melody melody;
   int frameCounts = 0;
 

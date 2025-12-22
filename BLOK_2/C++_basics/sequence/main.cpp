@@ -6,7 +6,7 @@ int main (int argc, char** argv) {
   Callback audioSource (44100.0f);
 
   JUCEModule juceModule (audioSource);
-  juceModule.init (1, 1);
+  juceModule.init (1, 1); //make (1, 1) if your code doesnt work.
 
   std::cout << "\n\nType 'q + enter' to exit\n";
   bool running = true;

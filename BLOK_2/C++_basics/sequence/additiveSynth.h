@@ -1,10 +1,10 @@
 
 
 
-class AdditiveSynth {
+class AdditiveSynth : public Synth {
 public:
-  void calculateOvertones();
+  void calculateOvertones(float freq, float freqShift);
   void summonNotes();
-  
+
 
 }
