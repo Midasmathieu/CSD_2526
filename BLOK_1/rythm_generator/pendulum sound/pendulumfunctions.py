@@ -1,5 +1,7 @@
 import pygame
 import math
+import time as t
+
 pygame.init()
 windowWidth = 800
 windowHeight = 800
@@ -12,8 +14,8 @@ a1 = degrees1 * math.pi / 180
 degrees2 = float(input("where do you want pendulum2 to start in degrees?: "))
 a2 = degrees2 * math.pi / 180
 #TODO: take modulo of degrees so if degrees > 360 the pendulum will still trigger the if else statements
-time_seconds = float(input("how long do you want the double pendulum to run in seconds"))
-time = time_seconds * 60
+teim_seconds = float(input("how long do you want the double pendulum to run in seconds"))
+teim = teim_seconds
 
 kick = []
 snare = []
@@ -37,7 +39,7 @@ pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.set_num_channels(16)
 running = True
 clock = pygame.time.Clock()
-timer = 0
+teimr = 0
 screen = pygame.display.set_mode((windowWidth, windowHeight))
 preva1 = a1
 preva2 = a2
@@ -91,10 +93,11 @@ while running:
     def crossing(angle, prevangle, drumsound, min, max, list):
         if angle > max and prevangle < min:
             drumsound.play()
-            list.append(timer)
+            list.append(teimr)
+            print("velocity1: ", a1_a)
         if angle < min and prevangle > max:
             drumsound.play()
-            list.append(timer)
+            list.append(teimr)
 
 # TODO: collision detection - maakgwneenbalaan. maak markdown bestanden
 
@@ -108,13 +111,14 @@ while running:
 #TODO: make clock.tick preciser
     clock.tick(60)
     #keeps track of the current moment in framerate
-    timer = timer + 1
+    teimr = teimr + 1/60
+    # print(teimr)
     #makes history of angles an x position
     preva1 = a1
     preva2 = a2
     prevx2 = x2
 
-    if timer > time:
+    if teimr > teim:
         running = False
 
 pygame.quit()
@@ -132,7 +136,7 @@ offSetList = []
 firstHit = [kick[0], snare[0], hihat[0]]
 firstHit.sort()
 
-# removes the silent time before the sequence
+# removes the silent teim before the sequence
 for f in range(0, len(kick)):
     actualKick.append(kick[f] - firstHit[0])
 for g in range(0, len(snare)):
@@ -154,7 +158,7 @@ for i in range(3, 23, 2):
 
     # defines the duration of one beat on the grid
     totalOffSet = 0
-    beat = (time - firstHit[0])/i
+    beat = (teim - firstHit[0])/i
     grid = []
 
     # makes a grid in an array
@@ -174,26 +178,26 @@ for i in range(3, 23, 2):
     offSetList.append(totalOffSet)
 
 
-print("totaloffsetlist to check best timesig: ", offSetList)
+print("totaloffsetlist to check best teimsig: ", offSetList)
 biasedOffSetList = []
 for currentOffSet in offSetList:
     biasedOffSet = 130 - (150/(currentOffSet+1))
     biasedOffSetList.append(biasedOffSet)
 
-print("biasedOffSetList to check best timesig: ", biasedOffSetList)
+print("biasedOffSetList to check best teimsig: ", biasedOffSetList)
 
 smallest = min(biasedOffSetList)
 print("whooooooo:", smallest)
-timeSig = biasedOffSetList.index(smallest) * 2 + 3
-print("timesig = ", timeSig)
+teimSig = biasedOffSetList.index(smallest) * 2 + 3
+print("teimsig = ", teimSig)
 
-#TODO: make option for user to overwrite the timeSig
+#TODO: make option for user to overwrite the teimSig
 
-beatDur = time/timeSig
+beatDur = teim/teimSig
 print(beatDur)
 
 actualGrid = []
-for l in range(0, timeSig):
+for l in range(0, teimSig):
     actualGrid.append(beatDur * l)
 print("here come the warm girds: ", actualGrid)
 
@@ -235,7 +239,7 @@ def quantizeList(list, gridList):
     for hit in list:
         # find the closest beat:
         closestBeat, actualOffSet = find_closest_num(hit, gridList)
-        print("this is the closest beat: ", closestBeat)
+        # print("this is the closest beat: ", closestBeat)
         quantizedList.append(closestBeat)
     return quantizedList
 
@@ -247,3 +251,24 @@ quantizedHihat = quantizeList(actualHihat, actualGrid)
 print("hey boss here is the quantized kick: ", quantizedKick)
 print("hey boss here is the quantized snare: ", quantizedSnare)
 print("hey boss here is the quantized hat: ", quantizedHihat)
+
+pygame.init()
+
+onemoretime = input("hey booosss do you want to hear that #onemoretime??... yes or no boosssss...")
+if onemoretime == "yes":
+    running = True
+    ts = quantizedKick.pop(0)
+else:
+    running = False
+
+time_zero = t.time()
+
+while running == True:
+    currentTime = t.time() - time_zero
+    if (currentTime > ts):
+        kicksound.play()
+        if quantizedKick:
+            ts = quantizedKick.pop(0)
+
+        else:
+            break

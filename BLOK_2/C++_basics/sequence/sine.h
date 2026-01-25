@@ -8,29 +8,17 @@ class Sine : public Oscillator{
 public:
   Sine(float frequency = 100.0f, float samplerate = 44100);
   ~Sine();
-  // void setSamplerate(float samplerate);
-  // //return current sample
-  // float getSample();
-  // //next sample
-  // void tick();
-// protected:
+
   void calculate();
 
-  // void print();
-  //
-  // void setFrequency(float frequency);
-  // float getFrequency();
+
 
 
 
 
 private:
 
-  // float samplerate;
-  // float sample;
-  // float frequency;
-  // float amplitude { 0.25f };
-  // float phase;
+
 };
 
 #endif

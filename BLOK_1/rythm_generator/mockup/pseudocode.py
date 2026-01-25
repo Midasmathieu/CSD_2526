@@ -9,9 +9,9 @@ quantizedHihat = []
 milisec = 0
 
     degrees1 = float(input("where do you want pendulum1 to start in degrees?: "))
-    start1 = degrees1 * math.pi / 180 / math.pi
+    a1 = degrees1 * math.pi / 180
     degrees2 = float(input("where do you want pendulum2 to start in degrees?: "))
-    start2 = degrees1 * math.pi / 180 / math.pi
+    a2 = degrees1 * math.pi / 180
     time = input("how long do you want the double pendulum to run in miliseconds?")
 
 function doublependulum(a1, a2, milisec){
@@ -62,7 +62,7 @@ while running = true run following code every 10 milisec:
     #put the durations in the list
     if(x1 => 0 && prevx1 =< 0 || x1 =< 0 && prevx1 => 0){
         kick.append(millisec)
-    }
+                }
     if(x2 => 0 && prevx2 =< 0 || x2 =< 0 && prevx2 => 0){
         snare.append(millisec)
     }

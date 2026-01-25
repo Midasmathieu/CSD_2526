@@ -90,10 +90,11 @@ def pendulumHistory(pendulumDict):
 
 def crossing(angle, prevangle, drumsound, min, max, list, angleVelocity, velocityList, timer):
     if angle > max and prevangle < min or angle < min and prevangle > max:
-        drumsound.play()
+        # drumsound.play()
         noteVelocity = abs(angleVelocity * 500) + 50
         if noteVelocity > 127:
             noteVelocity = 127
+        playNote(drumsound, noteVelocity)
         velocityList.append(noteVelocity)
         list.append(timer)
 

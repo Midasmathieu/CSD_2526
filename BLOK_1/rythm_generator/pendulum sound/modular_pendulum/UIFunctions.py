@@ -1,8 +1,4 @@
-# def retrieveUserFloat(question):
-#     userInput = input(question)
-#     return(userInput)
-
-
+# checks if an input is an float and in range
 def checkUserFloat(minInput, maxInput, defaultInput, errorMessage, correctInput, question):
     correctInput = correctInput
     userInput = input(question)
@@ -25,6 +21,7 @@ def checkUserFloat(minInput, maxInput, defaultInput, errorMessage, correctInput,
 
     return userFloat, correctInput
 
+# gets userFloat and returns it or returns default input
 def retrieveUserInput(minInput, maxInput, defaultInput, question, errorMessage, message):
     correctInput = False
     while (not correctInput):
@@ -33,6 +30,7 @@ def retrieveUserInput(minInput, maxInput, defaultInput, question, errorMessage, 
             print(validUserInput, message)
             return validUserInput
 
+# gets the choice from user
 def retrieveUserChoice(question, options):
     if(not str(question)):
         raise TypeError(
@@ -42,9 +40,9 @@ def retrieveUserChoice(question, options):
     for i, option in enumerate(options):
         print(i + 1, ':', option)
 
-    # print('left empty for default option 1 dude')
     return input()
 
+# check if userinput is an interger and in range
 def validateIntRange(value, rangeLow, rangeHigh):
     try:
         intValue = int(value)
@@ -55,6 +53,7 @@ def validateIntRange(value, rangeLow, rangeHigh):
 
     return False
 
+# gets user input and selects option
 def retrieveUserOption(question, options):
     selectedOption = 1
     correctInput = False

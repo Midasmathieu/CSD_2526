@@ -98,27 +98,21 @@ while running:
 
 # TODO: collision detection - maakgwneenbalaan. maak markdown bestanden
 
-
-    # if x2 > 400 and prevx2 < 400:
-    #     snaresound.play()
-    #     print("hahadfsdhdfashkjldfjhkls")
-    # if x2 < 400 and prevx2 > 400:
-    #     snaresound.play()
-
+#checks if there is a kick or snare to be played
     crossing(a1, preva1, kicksound, 0.2, 3.0, kick)
     crossing(a2, preva2, hihatsound, 0.2, 3.0, hihat)
     crossing(x2, prevx2, snaresound, xZero, xZero, snare)
 
 
     pygame.display.flip()
-
+#TODO: make clock.tick preciser
     clock.tick(60)
+    #keeps track of the current moment in framerate
     timer = timer + 1
+    #makes history of angles an x position
     preva1 = a1
     preva2 = a2
     prevx2 = x2
-
-    # print(a1 % math.pi)
 
     if timer > time:
         running = False
@@ -155,7 +149,7 @@ kickSnare = actualKick + actualSnare
 kickSnare.sort()
 
 
-# TODO: make option to overwrite time signature
+# TODO: put creation of grid in function
 for i in range(3, 23, 2):
 
     # defines the duration of one beat on the grid
@@ -186,5 +180,29 @@ smallest = min(offSetList)
 print("whooooooo:", smallest)
 timeSig = offSetList.index(smallest)*2+3
 print("timesig = ", timeSig)
+
+#TODO: make option for user to overwrite the timeSig
+
 beatDur = time/timeSig
 print(beatDur)
+
+actualGrid = []
+for l in range(0, timeSig):
+    actualGrid.append(beatDur * l)
+
+# function to quantize a list
+def quantizeList(list, gridList, quantizedList):
+    for hit in list:
+        # find the closest beat:
+        quantizedList = []
+        quantizeBeat = "closest"(list)
+        actualOffSet = quantizeBeat - hit
+        quantizedList.append(hit + actualOffSet)
+        return quantizedList
+
+# using the function above to quantize the kick snare and hihat
+quantizeList(actualKick, actualGrid, quantizedKick)
+# quantizeList(actualSnare, actualGrid, quantizedSnare)
+# quantizeList(actualHihat, actualGrid, quantizedHihat)
+
+print(quantizedKick)

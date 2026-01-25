@@ -4,6 +4,7 @@
 #include "audiocomponent.h"
 #include "sine.h"
 #include "melody.h"
+#include "additiveSynth.h"
 
 class Callback : public AudioCallback {
 public:
@@ -16,14 +17,7 @@ public:
 
 private:
   double samplerate;
-  Sine sine;
-  Sine overtone1;
-  Sine overtone2;
-  Sine overtone3;
-  Sine overtone4;
-  Sine overtone5;
-  Sine overtone6;
-  Sine lfo;
+  AdditiveSynth AdditiveSynth;
   double amplitude = 0.5;
   Melody melody;
   int frameCounts = 0;

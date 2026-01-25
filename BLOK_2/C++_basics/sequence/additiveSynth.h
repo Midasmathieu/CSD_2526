@@ -1,10 +1,18 @@
+#ifndef ADDITIVESYNTH_H
+#define ADDITIVESYNTH_H
 
+#include "sine.h"
+#include "melody.h"
 
-
-class AdditiveSynth : public Synth {
+class AdditiveSynth {
 public:
-  void calculateOvertones(float freq, float freqShift);
-  void summonNotes();
+  AdditiveSynth();
+  void setFrequencys();
+  void tickAll();
+  void calculateAll();
+  int getSample();
+  void setFrequency2();
+};
 
 
-}
+#endif

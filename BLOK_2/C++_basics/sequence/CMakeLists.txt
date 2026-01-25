@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 project(seqExecutable VERSION 0.0.1)
 
 juce_add_console_app(seqExecutable PRODUCT_NAME "seqExecutable")
-target_sources(seqExecutable PRIVATE main.cpp sine.cpp oscillator.cpp note.cpp melody.cpp callback.cpp)
+target_sources(seqExecutable PRIVATE main.cpp sine.cpp oscillator.cpp additiveSynth.cpp note.cpp melody.cpp callback.cpp)
 target_compile_definitions(seqExecutable PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
 
 target_link_libraries(seqExecutable

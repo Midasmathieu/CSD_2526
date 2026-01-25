@@ -1,22 +1,46 @@
-correctInput = False
 
-a1 = 90
 
-while (not correctInput):
-    userA1 = input("Where do you want pendulum 1 to start in degrees? (leave empty for 90 degrees)")
+exampleQuestion = 'What drumkit do you want to select?'
+exampleOptions = ['autechre kit', 'dark kit']
 
-    if not userA1:
-        correctInput = True
+def retrieveUserOption(question, options):
+    if(not str(question)):
+        raise TypeError(
+            'awkward error....'
+        )
+
     else:
-        try:
-            a1 = float(userA1)
-            if a1 > 0 and a1 < 360:
+        selectedOption = 1
+        correctInput = False
+
+        while (not correctInput):
+            print(question)
+            for i, option in enumerate(options):
+                print(i +1, ':', option)
+            print('leave empty for option 1')
+            userInput = input()
+
+            if not userInput:
                 correctInput = True
+
             else:
-                a1 = 90
-                print("a circle has a minimum of 0 and a maximum of 360 degrees")
+                try:
+                    inputIndex = int(userInput)
+                    if (inputIndex >= 1 and inputIndex <= len(options)):
+                        selectedOption = inputIndex
 
-        except:
-            print("nah dawg try again")
+                        correctInput = True
 
-print("hell ye angle is: ", a1)
+                    else:
+                        raise TypeError(
+                            'awkward... trow error....'
+                        )
+                except:
+                    print('BUMMER! that no make the sense dud. \n' +
+                        'try again dud...\n' + 'bummer mann-person.\n\n')
+        selectedOption -= 1
+
+    return selectedOption
+
+drumIndex = retrieveUserOption(exampleQuestion, exampleOptions)
+print( exampleOptions[drumIndex])
