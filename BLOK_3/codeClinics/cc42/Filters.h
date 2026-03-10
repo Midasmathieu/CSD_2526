@@ -7,56 +7,8 @@
 
 class Filter {
 public:
-  // Filter() {
-  //   std::cout << 'Filter constructor' << std::endl;
-  // }
-  // ~Filter();
   virtual float process(float input) = 0;
 };
-
-
-class HalfBiquad :  public Filter {
-  public:
-  float process(float input) override {
-    // y[n] = bX[n] - a1Y[n-1] - a2Y[n-2]
-
-    float output = input * b1 + sample1 * a1 + sample2 * a2;
-    // std::cout << a2 << std::endl;
-    sample2 = sample1;
-    sample1 = output;
-    // std::cout << sample1 << ", " << sample2 << std::endl;
-    return output;
-  }
-
-  void setB1Coefficient(float coefficient){
-      b1 = coefficient;
-      // std::cout << b1 << std::endl;
-  }
-
-  void setA1Coefficient(float coefficient) {
-      a1 = coefficient;
-      // std::cout << a1 << std::endl;
-
-  }
-
-  void setA2Coefficient(float coefficient) {
-      a2 = coefficient;
-      // std::cout << a2 << std::endl;
-
-  }
-
-
-private:
-  float b1  = { 0.0 };
-  float a1 = { 0.0 };
-  float a2 = { 0.0 };
-  float sample1 = { 0.0 };
-  float sample2 = { 0.0 };
-};
-
-
-
-
 
 
 class Biquad :  public Filter {
@@ -94,8 +46,6 @@ private:
   float sample1 = { 0.0f };
   float sample2 = { 0.0f };
 };
-
-
 
 
 class PirkleBiquad :  public Filter {
