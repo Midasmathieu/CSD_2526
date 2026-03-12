@@ -7,6 +7,7 @@
 #include <oscillator.h>
 #include <saw.h>
 #include "Filters.h"
+#include "CircularBuffer.h"
 #include "deltasequence.h"
 #include "math.h"
 
@@ -20,11 +21,14 @@ struct CustomCallback : AudioCallback {
     }
 
     void prepare(int sampleRate, int blockSize) override {
-        saw.prepare(sampleRate);
-        saw.setFrequency(110.0f);
-        lfo.prepare(sampleRate);
-        lfo.setFrequency(0.3f);
-        filter.calculateCoefficients(1000.0f, 10.0f);
+      saw.prepare(sampleRate);
+      saw.setFrequency(110.0f);
+      lfo.prepare(sampleRate);
+      lfo.setFrequency(550.0f);
+      filter.calculateCoefficients(200.0f, 0.1f);
+      circularBuffer.allocateBuffer();
+      circularBuffer.resetSize(96000);
+
 
 
     }
@@ -36,12 +40,14 @@ struct CustomCallback : AudioCallback {
         for (auto sample = 0u; sample < numFrames; ++sample) {
             saw.tick();
             lfo.tick();
-            const float oscSample = saw.getSample() * 0.2f;
+            circularBuffer.tick();
+            filter.calculateCoefficients(800.0f+lfo.getSample()*300.0f, 17.2f);
+            const float oscSample = saw.getSample() * 0.1f;
             float filteredOutput = filter.process(oscSample);
             if(filteredOutput >= 1.0) { filteredOutput = 1.0; std::cout << "clipping \n";
             } else if(filteredOutput <= -1.0) { filteredOutput = -1.0; std::cout << "-clipping \n";}
             for(auto channel = 0u; channel < numOutputChannels; ++channel) {
-                outputChannels[channel][sample] = filteredOutput;
+                outputChannels[channel][sample] = circularBuffer.read();
             }
         }
     }
@@ -50,6 +56,7 @@ struct CustomCallback : AudioCallback {
     Saw saw {200};
     Saw lfo {0.5};
     PirkleBiquad filter;
+    CircularBuffer circularBuffer;
 };
 
 #define Delta_Sequence 0
