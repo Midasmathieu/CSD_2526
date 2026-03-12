@@ -28,6 +28,7 @@ struct CustomCallback : AudioCallback {
       filter.calculateCoefficients(200.0f, 0.1f);
       circularBuffer.allocateBuffer();
       circularBuffer.resetSize(96000);
+      circularBuffer.setDistanceRW(48000);
 
 
 
@@ -44,10 +45,10 @@ struct CustomCallback : AudioCallback {
             filter.calculateCoefficients(800.0f+lfo.getSample()*300.0f, 17.2f);
             const float oscSample = saw.getSample() * 0.1f;
             float filteredOutput = filter.process(oscSample);
-            if(filteredOutput >= 1.0) { filteredOutput = 1.0; std::cout << "clipping \n";
-            } else if(filteredOutput <= -1.0) { filteredOutput = -1.0; std::cout << "-clipping \n";}
+            circularBuffer.write(oscSample);
+            float delayedOutput = circularBuffer.read();
             for(auto channel = 0u; channel < numOutputChannels; ++channel) {
-                outputChannels[channel][sample] = circularBuffer.read();
+                outputChannels[channel][sample] = 0.5*oscSample + 0.5*delayedOutput;
             }
         }
     }
