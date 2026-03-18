@@ -6,13 +6,14 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class EffectsChain {
-public:
+ public:
     EffectsChain() {}
     void prepareToPlay(float sampleRate, int numSamplesPerBlock){
         std::cout << sampleRate << std::endl;
         circularBuffer.resetSize(192000);
         circularBuffer.setDistanceRW(200);
         circularBuffer.m_calculatePhaseStep();
+        circularBuffer.generateEnvelope();
     }
 
 
@@ -40,7 +41,7 @@ public:
 
 
         if(prevParameter != parameter){
-          //static_cast fuckt dingen op in classes gebruik iets anders
+          // static_cast fuckt dingen op in classes gebruik iets anders
           std::cout << parameter << std::endl;
           unsigned int delayTime = parameter * 95000.0 + 1000.0;
         }
@@ -48,11 +49,11 @@ public:
         prevParameter = parameter;
       }
 
-private:
+ private:
   float  prevParameter = -1;
   float sampletje;
-  WaveShaper waveShaper;
-  Delay delay;
+  // WaveShaper waveShaper;
+  // Delay delay;
   float tempSample;
   CircularBuffer circularBuffer;
   float feedback;
