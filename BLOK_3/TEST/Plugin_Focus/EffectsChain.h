@@ -26,7 +26,7 @@ class EffectsChain {
                 circularBuffer.tick();
                 float tempInput = inputChannel[sample];
 
-                circularBuffer.write(tempInput);
+                circularBuffer.write(tempInput * 0.5 + sampletje * 0.8);
                 // std::cout << tempInput << std::endl;
                 sampletje = circularBuffer.read();
                 outputChannel[sample] = sampletje;

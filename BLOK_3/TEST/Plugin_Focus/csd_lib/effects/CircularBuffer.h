@@ -6,145 +6,149 @@
 
 class CircularBuffer {
  public:
-  CircularBuffer() {
-    std::cout << "Buffer constructor" << std::endl;
-    allocateBuffer();
-  }
+  CircularBuffer();
+  // {
+  //   std::cout << "Buffer constructor" << std::endl;
+  //   allocateBuffer();
+  // }
 
-  ~CircularBuffer() {
-    std::cout << "Buffer destructor" << std::endl;
-    releaseBuffer();
-  }
+  ~CircularBuffer();
+  // {
+  //   std::cout << "Buffer destructor" << std::endl;
+  //   releaseBuffer();
+  // }
 
-  void allocateBuffer() {
-    m_buffer = (float*)malloc(m_size * sizeof(float));
-    memset(m_buffer, 0, m_size * sizeof(float));
-  }
+  void allocateBuffer();
+  // {
+  //   m_buffer = (float*)malloc(m_size * sizeof(float));
+  //   memset(m_buffer, 0, m_size * sizeof(float));
+  // }
 
-  void releaseBuffer() {
-    free(m_buffer);
-  }
+  void releaseBuffer();
+  // {
+  //   free(m_buffer);
+  // }
 
-  inline void tick() {
-    calculateReadH();
-    incrWriteH();
-    // std::cout << "test" << std::endl;
-    incrPhase();
-    // std::cout << m_headPhase << std::endl;
-    // readH0.incrH();
-  }
+  void tick();
+  // {
+  //   calculateReadH();
+  //   incrWriteH();
+  //   // std::cout << "test" << std::endl;
+  //   incrPhase();
+  //   // std::cout << m_headPhase << std::endl;
+  //   // readH0.incrH();
+  // }
 
-  inline float read() {
-    return m_buffer[m_readH] * calculateamp(m_headPhase) + m_buffer[m_readH2] * calculateamp(m_headPhase2);
-    std::cout << "readH2:  " << m_readH2 << std::endl;
-    std::cout << "read\n";
-  }
+  float read();
+  // {
+  //   return m_buffer[m_readH] * calculateamp(m_headPhase) + m_buffer[m_readH2] * calculateamp(m_headPhase2);
+  //   std::cout << "readH2:  " << m_readH2 << std::endl;
+  //   std::cout << "read\n";
+  // }
 
-  inline void write(float input) {
-    m_buffer[m_writeH] = input;
-    // std::cout << "write\n";
-  }
+  void write(float input);
+  // {
+  //   m_buffer[m_writeH] = input;
+  //   // std::cout << "write\n";
+  // }
 
-  void resetSize(unsigned int size) {
-    m_size = size - sizeof(float);
-    // readH0.setSize(m_size);
-    releaseBuffer();
-    allocateBuffer();
-    // std::cout << m_size << std::endl;
-  }
+  void resetSize(unsigned int size);
+  // {
+  //   m_size = size - sizeof(float);
+  //   // readH0.setSize(m_size);
+  //   releaseBuffer();
+  //   allocateBuffer();
+  //   // std::cout << m_size << std::endl;
+  // }
 
-  void setDistanceRW(unsigned int distanceRW) {
-    m_distanceRW = distanceRW;
-    // m_readH = m_writeH - m_distanceRW + m_size;
-    // wrapH(m_readH);
-    std::cout << "setDistanceRW\n";
-  }
+  void setDistanceRW(unsigned int distanceRW);
+  // {
+  //   m_distanceRW = distanceRW;
+  //   // m_readH = m_writeH - m_distanceRW + m_size;
+  //   // wrapH(m_readH);
+  //   std::cout << "setDistanceRW\n";
+  // }
 
-  float getDistanceRW() {
-    return m_distanceRW;
-  }
+  float getDistanceRW();
+  // {
+  //   return m_distanceRW;
+  // }
 
-  void m_calculatePhaseStep() {
-    // m_phaseStep = 1.0/(static_cast<float>(m_sampleRate) * static_cast<float>(m_phaseDurMillis));
-    m_phaseStep = 1.0/static_cast<float>(m_phaseDur);
-    std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
-  }
+  void m_calculatePhaseStep();
+  // {
+  //   m_phaseStep = 1.0/static_cast<float>(m_phaseDur);
+  //   std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
+  // }
 
-  void setGrainSize(int grainsize) {
-    m_grainSize = grainsize;
-  }
+  void setGrainSize(int grainSize);
+  // {
+  //   m_grainSize = grainsize;
+  // }
 
-  void generateEnvelope() {
-    std::cout << "making envelope..." << std::endl;
-    m_envelope = (float*)malloc(1024 * sizeof(float));
-    memset(m_envelope, 0, sizeof(float)*1024);
-    int rampTime = 512;
-    float rc = 1.0/rampTime;
-    // std::cout << "rc: " << rc << std::endl;
-    for (int i = 0; i < 512; i++) {
-      float amp = i * rc;
-      m_envelope[i] = amp;
-      int j = i + 512;
-      float k = i * -rc + 1.0;
-      m_envelope[j] = k;
-    }
-    // for (int l = 200; l < 842; l++) {
-    //   m_envelope[l] = 1.0f;
-    // }
-  }
+  void generateEnvelope();
+  // {
+  //   std::cout << "making envelope..." << std::endl;
+  //   m_envelope = (float*)malloc(1024 * sizeof(float));
+  //   memset(m_envelope, 0, sizeof(float)*1024);
+  //   int rampTime = 512;
+  //   float rc = 1.0/rampTime;
+  //
+  //   for (int i = 0; i < 512; i++) {
+  //     int j = i + 512;
+  //     float attack = i * rc;
+  //     float release = i * -rc + 1.0;
+  //     m_envelope[i] = attack;
+  //     m_envelope[j] = release;
+  //   }
+  // }
 
-  float calculateamp(float phase) {
-    int index =  phase * 1024;
-    std::cout << "lets index: " << m_envelope[index] << std::endl;
-    return m_envelope[index];
-  }
+  float calculateAmp(float phase);
+  // {
+  //   int index =  phase * 1024;
+  //   return m_envelope[index];
+  // }
 
  private:
-  inline void calculateReadH() {
-    float backward = m_headPhase * static_cast<float>(m_grainSize)*2;
-    // m_readH = m_writeH - static_cast<int>(backward);
-    int m_intReadH = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward);
-    // std::cout << "reqad head prev wrap: " << m_readH << "headPhase : " << m_headPhase << std::endl;
-    revWrapH(m_intReadH);
-    m_readH = static_cast<unsigned int>(m_intReadH);
-    wrapH(m_readH);
-    float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
-    // m_readH = m_writeH - static_cast<int>(backward);
-    int m_intReadH2 = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward2);
-    // std::cout << "reqad head prev wrap: " << m_readH << "headPhase : " << m_headPhase << std::endl;
-    revWrapH(m_intReadH2);
-    m_readH2 = static_cast<unsigned int>(m_intReadH2);
-    wrapH(m_readH2);
-    std::cout << m_readH2 << std::endl;
-    // std::cout << "backward: " << backward << " head: " << m_readH << std::endl;
-    // std::cout << "reqad head: " <<  m_readH << std::endl;
-    // "m_distanceRW:" << m_distanceRW << "backward: "  << backward << std::endl;
-  }
+  void calculateReadH();
+  // {
+  //   float backward  = m_headPhase * static_cast<float>(m_grainSize)*2;
+  //   float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
+  //   int m_intReadH  = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward);
+  //   int m_intReadH2 = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward2);
+  //   revWrapH(m_intReadH);
+  //   revWrapH(m_intReadH2);
+  //   m_readH  = static_cast<unsigned int>(m_intReadH);
+  //   m_readH2 = static_cast<unsigned int>(m_intReadH2);
+  //   wrapH(m_readH);
+  //   wrapH(m_readH2);
+  // }
 
-  inline void incrWriteH() {
-    m_writeH++;
-    wrapH(m_writeH);
-    // std::cout << "writhead :  " << m_writeH << std:: endl;
-  }
+  void incrWriteH();
+  // {
+  //   m_writeH++;
+  //   wrapH(m_writeH);
+  // }
 
-  inline void incrPhase() {
-    m_headPhase += m_phaseStep;
-    m_headPhase2 += m_phaseStep;
-    if (m_headPhase > 1.0) { m_headPhase -= 1.0; std::cout << "phasereset" << std::endl;}
-    if (m_headPhase2 > 1.0) { m_headPhase2 -= 1.0; std::cout << "phasereset2" << std::endl;}
-    std::cout << "forrealheadphase2:  " << m_headPhase << std::endl;
-  }
+  void incrPhase();
+  // {
+  //   m_headPhase  += m_phaseStep;
+  //   m_headPhase2 += m_phaseStep;
+  //   if (m_headPhase  > 1.0) { m_headPhase  -= 1.0; std::cout << "phasereset"  << std::endl;}
+  //   if (m_headPhase2 > 1.0) { m_headPhase2 -= 1.0; std::cout << "phasereset2" << std::endl;}
+  // }
 
-  inline void wrapH(unsigned int& head) {
-    if (head > m_size) { head -= m_size;
-    // std::cout << " here we go: wrap: " << head << std::endl;
-    }
-  }
+  void wrapH(unsigned int& head);
+  // {
+  //   if (head > m_size) { head -= m_size;
+  //   // std::cout << " here we go: wrap: " << head << std::endl;
+  //   }
+  // }
 
-  inline void revWrapH(int& head) {
-     if (head < 0) { head = head + m_size; // std::cout << "wrapreverse\n";
-     }
-  }
+  void revWrapH(int& head);
+  // {
+  //    if (head < 0) { head = head + m_size; // std::cout << "wrapreverse\n";
+  //    }
+  // }
 
 
   // ReadH readH0;
