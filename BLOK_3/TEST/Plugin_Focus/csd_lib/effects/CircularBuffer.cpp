@@ -47,14 +47,14 @@ void CircularBuffer::write(float input)
   m_buffer[m_writeH] = input;
 }
 
-void CircularBuffer::resetSize(unsigned int size)
+void CircularBuffer::resetSize(int size)
 {
   m_size = size - sizeof(float);
   releaseBuffer();
   allocateBuffer();
 }
 
-void CircularBuffer::setDistanceRW(unsigned int distanceRW)
+void CircularBuffer::setDistanceRW(int distanceRW)
 {
   m_distanceRW = distanceRW;
   std::cout << "setDistanceRW\n";
@@ -67,7 +67,7 @@ float CircularBuffer::getDistanceRW()
 
 void CircularBuffer::m_calculatePhaseStep()
 {
-  m_phaseStep = 1.0/static_cast<float>(m_phaseDur);
+  m_phaseStep = 1.0/static_cast<float>(m_grainSize);
   std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
 }
 
@@ -80,9 +80,11 @@ void CircularBuffer::generateEnvelope()
 {
   std::cout << "making envelope..." << std::endl;
   m_envelope = (float*)malloc(1024 * sizeof(float));
-  memset(m_envelope, 0, sizeof(float)*1024);
   int rampTime = 512;
   float rc = 1.0/rampTime;
+  for (int i = 0; i < 1025; i++) {
+    std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
+  }
 
   for (int i = 0; i < 512; i++) {
     int j = i + 512;
@@ -91,11 +93,14 @@ void CircularBuffer::generateEnvelope()
     m_envelope[i] = attack;
     m_envelope[j] = release;
   }
+  for (int i = 0; i < 1025; i++) {
+    std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
+  }
 }
 
 float CircularBuffer::calculateAmp(float phase)
 {
-  int index =  phase * 1024;
+  int index =  phase * 1027;
   return m_envelope[index];
 }
 
@@ -103,12 +108,8 @@ void CircularBuffer::calculateReadH()
 {
   float backward  = m_headPhase * static_cast<float>(m_grainSize)*2;
   float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
-  int m_intReadH  = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward);
-  int m_intReadH2 = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward2);
-  revWrapH(m_intReadH);
-  revWrapH(m_intReadH2);
-  m_readH  = static_cast<unsigned int>(m_intReadH);
-  m_readH2 = static_cast<unsigned int>(m_intReadH2);
+  m_readH  = m_writeH - m_distanceRW - backward;
+  m_readH2 = m_writeH - m_distanceRW - backward2;
   wrapH(m_readH);
   wrapH(m_readH2);
 }
@@ -127,15 +128,15 @@ void CircularBuffer::incrPhase()
   if (m_headPhase2 > 1.0) { m_headPhase2 -= 1.0; std::cout << "phasereset2" << std::endl;}
 }
 
-void CircularBuffer::wrapH(unsigned int& head)
+void CircularBuffer::wrapH(int& head)
 {
-  if (head > m_size) { head -= m_size;
-  // std::cout << " here we go: wrap: " << head << std::endl;
+  if (head > m_size) { head -= m_size; }
+  else if (head < 0) { head += m_size; //std::cout << "minuminus" << head;
   }
 }
 
-void CircularBuffer::revWrapH(int& head)
-{
-   if (head < 0) { head = head + m_size; // std::cout << "wrapreverse\n";
-   }
-}
+// void CircularBuffer::revWrapH(int& head)
+// {
+//    if (head < 0) { head = head + m_size; // std::cout << "wrapreverse\n";
+//    }
+// }

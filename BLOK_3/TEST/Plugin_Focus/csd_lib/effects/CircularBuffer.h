@@ -7,159 +7,46 @@
 class CircularBuffer {
  public:
   CircularBuffer();
-  // {
-  //   std::cout << "Buffer constructor" << std::endl;
-  //   allocateBuffer();
-  // }
-
   ~CircularBuffer();
-  // {
-  //   std::cout << "Buffer destructor" << std::endl;
-  //   releaseBuffer();
-  // }
 
   void allocateBuffer();
-  // {
-  //   m_buffer = (float*)malloc(m_size * sizeof(float));
-  //   memset(m_buffer, 0, m_size * sizeof(float));
-  // }
 
   void releaseBuffer();
-  // {
-  //   free(m_buffer);
-  // }
 
   void tick();
-  // {
-  //   calculateReadH();
-  //   incrWriteH();
-  //   // std::cout << "test" << std::endl;
-  //   incrPhase();
-  //   // std::cout << m_headPhase << std::endl;
-  //   // readH0.incrH();
-  // }
 
   float read();
-  // {
-  //   return m_buffer[m_readH] * calculateamp(m_headPhase) + m_buffer[m_readH2] * calculateamp(m_headPhase2);
-  //   std::cout << "readH2:  " << m_readH2 << std::endl;
-  //   std::cout << "read\n";
-  // }
 
   void write(float input);
-  // {
-  //   m_buffer[m_writeH] = input;
-  //   // std::cout << "write\n";
-  // }
 
-  void resetSize(unsigned int size);
-  // {
-  //   m_size = size - sizeof(float);
-  //   // readH0.setSize(m_size);
-  //   releaseBuffer();
-  //   allocateBuffer();
-  //   // std::cout << m_size << std::endl;
-  // }
+  void resetSize( int size);
 
-  void setDistanceRW(unsigned int distanceRW);
-  // {
-  //   m_distanceRW = distanceRW;
-  //   // m_readH = m_writeH - m_distanceRW + m_size;
-  //   // wrapH(m_readH);
-  //   std::cout << "setDistanceRW\n";
-  // }
+  void setDistanceRW( int distanceRW);
 
   float getDistanceRW();
-  // {
-  //   return m_distanceRW;
-  // }
 
   void m_calculatePhaseStep();
-  // {
-  //   m_phaseStep = 1.0/static_cast<float>(m_phaseDur);
-  //   std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
-  // }
 
   void setGrainSize(int grainSize);
-  // {
-  //   m_grainSize = grainsize;
-  // }
 
   void generateEnvelope();
-  // {
-  //   std::cout << "making envelope..." << std::endl;
-  //   m_envelope = (float*)malloc(1024 * sizeof(float));
-  //   memset(m_envelope, 0, sizeof(float)*1024);
-  //   int rampTime = 512;
-  //   float rc = 1.0/rampTime;
-  //
-  //   for (int i = 0; i < 512; i++) {
-  //     int j = i + 512;
-  //     float attack = i * rc;
-  //     float release = i * -rc + 1.0;
-  //     m_envelope[i] = attack;
-  //     m_envelope[j] = release;
-  //   }
-  // }
 
   float calculateAmp(float phase);
-  // {
-  //   int index =  phase * 1024;
-  //   return m_envelope[index];
-  // }
 
  private:
   void calculateReadH();
-  // {
-  //   float backward  = m_headPhase * static_cast<float>(m_grainSize)*2;
-  //   float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
-  //   int m_intReadH  = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward);
-  //   int m_intReadH2 = static_cast<int>(m_writeH) - static_cast<int>(m_distanceRW) - static_cast<int>(backward2);
-  //   revWrapH(m_intReadH);
-  //   revWrapH(m_intReadH2);
-  //   m_readH  = static_cast<unsigned int>(m_intReadH);
-  //   m_readH2 = static_cast<unsigned int>(m_intReadH2);
-  //   wrapH(m_readH);
-  //   wrapH(m_readH2);
-  // }
-
   void incrWriteH();
-  // {
-  //   m_writeH++;
-  //   wrapH(m_writeH);
-  // }
-
   void incrPhase();
-  // {
-  //   m_headPhase  += m_phaseStep;
-  //   m_headPhase2 += m_phaseStep;
-  //   if (m_headPhase  > 1.0) { m_headPhase  -= 1.0; std::cout << "phasereset"  << std::endl;}
-  //   if (m_headPhase2 > 1.0) { m_headPhase2 -= 1.0; std::cout << "phasereset2" << std::endl;}
-  // }
+  void wrapH(int& head);
+  // void revWrapH(int& head);
 
-  void wrapH(unsigned int& head);
-  // {
-  //   if (head > m_size) { head -= m_size;
-  //   // std::cout << " here we go: wrap: " << head << std::endl;
-  //   }
-  // }
-
-  void revWrapH(int& head);
-  // {
-  //    if (head < 0) { head = head + m_size; // std::cout << "wrapreverse\n";
-  //    }
-  // }
-
-
-  // ReadH readH0;
-  unsigned int m_size = 48000;
-  unsigned int m_readH;
-  unsigned int m_readH2;
-  unsigned int m_writeH = 0;
-  unsigned int m_distanceRW;
-  unsigned int m_timer = { 0 };
+  int m_size = 48000;
+  int m_readH;
+  int m_readH2;
+  int m_writeH = 0;
+  int m_distanceRW;
+  int m_timer = { 0 };
   int m_grainSize =  48000;
-  int m_phaseDur = 48000;
   float m_headPhase = 0.0;
   float m_headPhase2 = 0.5f;
   int m_sampleRate = 48000;
