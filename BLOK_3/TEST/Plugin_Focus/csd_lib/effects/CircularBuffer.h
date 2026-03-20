@@ -1,6 +1,7 @@
 #ifndef CIRCULARBUFFER_H
 #define CIRCULARBUFFER_H
 
+#include "line.h"
 #include <iostream>
 #include <cstring>
 
@@ -27,7 +28,11 @@ class CircularBuffer {
 
   void m_calculatePhaseStep();
 
-  void setGrainSize(int grainSize);
+  void setGrainSize(float grainSize, bool interpolateChange = true);
+
+  // void setGrainSize(float grainSize, bool interpolateChange = true);
+
+  float getGrainSize();
 
   void generateEnvelope();
 
@@ -44,15 +49,17 @@ class CircularBuffer {
   int m_readH;
   int m_readH2;
   int m_writeH = 0;
-  int m_distanceRW;
+  int m_distanceRW = 0;
   int m_timer = { 0 };
-  int m_grainSize =  48000;
+  // int m_grainSize =  48000;
   float m_headPhase = 0.0;
   float m_headPhase2 = 0.5f;
   int m_sampleRate = 48000;
   float m_phaseStep; //= 1/(m_sampleRate * m_grainSize);
   float* m_buffer;
   float* m_envelope;
+  Line m_grainSize;
+
 };
 
 

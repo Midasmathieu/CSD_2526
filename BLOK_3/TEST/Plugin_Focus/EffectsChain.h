@@ -26,7 +26,7 @@ class EffectsChain {
                 circularBuffer.tick();
                 float tempInput = inputChannel[sample];
 
-                circularBuffer.write(tempInput * 0.5 + sampletje * 0.9);
+                circularBuffer.write(tempInput * 0.5 + sampletje * 0.5);
                 // std::cout << tempInput << std::endl;
                 sampletje = circularBuffer.read();
                 outputChannel[sample] = sampletje*2.0+ tempInput*0.8;
@@ -42,7 +42,7 @@ class EffectsChain {
 
         if(prevParameter != parameter){
           // static_cast fuckt dingen op in classes gebruik iets anders
-          int delayTime = parameter * 95000.0;
+          int delayTime = parameter * 95000.0 + 2000.0;
           std::cout << delayTime << std::endl;
           circularBuffer.setGrainSize(delayTime);
         }
