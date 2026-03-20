@@ -12,7 +12,6 @@ Line::Line() : m_active(false), m_phase (0.0f),
 
 Line::~Line() {std::cout << "ik ga schieten met de gannoe\n";}
 
-
 void Line::jumpToValue(float value) {
   m_active = false;
 }

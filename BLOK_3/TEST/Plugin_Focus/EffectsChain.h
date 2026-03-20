@@ -14,6 +14,7 @@ class EffectsChain {
         circularBuffer.setDistanceRW(200);
         circularBuffer.m_calculatePhaseStep();
         circularBuffer.generateEnvelope();
+        circularBuffer.setGrainSize(24000);
     }
 
 
@@ -24,6 +25,7 @@ class EffectsChain {
             auto* outputChannel = buffer.getWritePointer(0);
             for (int sample = 0; sample < buffer.getNumSamples(); ++sample){
                 circularBuffer.tick();
+                circularBuffer.smoothGrain();
                 float tempInput = inputChannel[sample];
 
                 circularBuffer.write(tempInput * 0.5 + sampletje * 0.5);
@@ -36,15 +38,11 @@ class EffectsChain {
     // }
 
     void setParameter(float parameter){
-
-        // delay.setFeedback(parameter*0.9);
-
-
         if(prevParameter != parameter){
           // static_cast fuckt dingen op in classes gebruik iets anders
           int delayTime = parameter * 95000.0 + 2000.0;
-          std::cout << delayTime << std::endl;
-          circularBuffer.setGrainSize(delayTime);
+          std::cout << "grainsize:::::: " << delayTime << std::endl;
+          circularBuffer.calculateGrainStep(delayTime);
         }
 
         prevParameter = parameter;

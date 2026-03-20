@@ -1,15 +1,13 @@
 #include "CircularBuffer.h"
 #include <iostream>
 #include <cstring>
-#define EPSILON 0.000001
-
+#include <cmath>
 
 
 CircularBuffer::CircularBuffer()
 {
   std::cout << "Buffer constructor" << std::endl;
   allocateBuffer();
-  m_grainSize.jumpToValue(24000);
 }
 
 CircularBuffer::~CircularBuffer()
@@ -68,53 +66,16 @@ float CircularBuffer::getDistanceRW()
   return m_distanceRW;
 }
 
-
 void CircularBuffer::m_calculatePhaseStep()
 {
-  float tempGrainSize = getGrainSize();
-  std::cout << getGrainSize() << std::endl;
-  m_phaseStep = 1.0/static_cast<float>(tempGrainSize);
-  std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
+  m_phaseStep = 1.0/static_cast<float>(m_grainSize);
+  // std::cout << "goyly shit we got phaseStep:  " << m_phaseStep << std::endl;
 }
 
-// void CircularBuffer::setGrainSize(int grainSize)
-// {
-//   m_grainSize = grainSize;
-//   m_calculatePhaseStep();
-// }
-float CircularBuffer::getGrainSize()
+void CircularBuffer::setGrainSize(int grainSize)
 {
-  return m_grainSize.getValue();
-}
-
-// void CircularBuffer::setGrainSize(float m_grainSize, bool interpolateChange)
-// {
-//   std::cout << "ChangeableDelay.setGrainSize, new m_grainSize: " << m_grainSize << std::endl;
-//   setActualGrainSize(m_grainSize);
-// }
-
-void CircularBuffer::setGrainSize(float grainSize, bool interpolateChange)
-{
-  // if new  new distance between R & W heads and update rhead position
-  if (grainSize < m_grainSize.getValue() - EPSILON ||
-      grainSize > m_grainSize.getValue() + EPSILON)
-  {
-    // validate new num delay samples
-    if (grainSize > 0 && grainSize <= m_size) {
-      std::cout << "ChangeableDelay::m_grainSize - setting new grainsize: "<< grainSize << std::endl;
-      std::cout << "ChangeableDelay::m_grainSize - interpolateChange: "<< interpolateChange << std::endl;
-      if (interpolateChange) {
-        m_grainSize.moveToValue(grainSize, 1.0f);
-        m_calculatePhaseStep();
-        std::cout << "ChangeableDelay::m_grainSize - calling moveToValue" << std::endl;
-      } else {
-        m_grainSize.jumpToValue(grainSize);
-        m_calculatePhaseStep();
-      }
-    } else {
-      throw "ChangeableDelay::m_grainSize - grainSize is out of range";
-    }
-  }
+  m_grainSize = grainSize;
+  m_calculatePhaseStep();
 }
 
 void CircularBuffer::generateEnvelope()
@@ -145,10 +106,37 @@ float CircularBuffer::calculateAmp(float phase)
   return m_envelope[index];
 }
 
+void CircularBuffer::calculateGrainStep(int parameter)
+{
+  parameterGrainSize = parameter;
+  int difference = parameterGrainSize - m_grainSize;
+  incrValue = difference * 0.0005;
+  move = true;
+  std::cout << "incrvalue::: " << incrValue << std:: endl;
+}
+
+void CircularBuffer::smoothGrain()
+{
+  if (move) {
+    m_grainSize += incrValue;
+    m_calculatePhaseStep();
+    std::cout << m_grainSize << ", ";
+    int variable1 = parameterGrainSize - m_grainSize;
+    int variable2 = abs(variable1);
+    std::cout << "absolute::::::::::::: " << variable2 << std::endl;
+    if (variable2 < 10) {
+      move = false;
+      std::cout << "moved grainSize!!!" << m_grainSize << std::endl << std::endl;
+    }
+  }
+  // setGrainSize(parameterGrainSize);
+}
+
+
 void CircularBuffer::calculateReadH()
 {
-  float backward  = m_headPhase * static_cast<float>(getGrainSize())*2;
-  float backward2 = m_headPhase2 * static_cast<float>(getGrainSize())*2;
+  float backward  = m_headPhase * static_cast<float>(m_grainSize)*2;
+  float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
   m_readH  = m_writeH - m_distanceRW - backward;
   m_readH2 = m_writeH - m_distanceRW - backward2;
   wrapH(m_readH);
