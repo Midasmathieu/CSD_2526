@@ -75,7 +75,8 @@ float WavetableGenerator::mapLin(float normValue, float low, float high)
     throw "WavetableGenerator::mapLin - value is not a normalized value";
   }
   // low + (high - low) * valueBehindComma
-  float first  = low * normValue;
-  float second = high * (1-normValue);
-  return (first + second) * 0.5f;
+  float first  = high - low;
+  float second = low + first * normValue;
+
+  return second;
 }

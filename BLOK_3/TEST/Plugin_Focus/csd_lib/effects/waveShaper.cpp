@@ -6,7 +6,7 @@
 #define useWavetable 1
 WaveShaper::WaveShaper(float dryWet) : Effect(dryWet) {
 #if useWavetable
-  WavetableGenerator::generateSCurve(buffer, BUFFER_SIZE, 2.0f);
+  WavetableGenerator::generateSCurve(buffer, BUFFER_SIZE, 10.0f);
 #endif
 }
 
@@ -21,11 +21,12 @@ void WaveShaper::applyEffect(const float &input, float &output)
 #if useWavetable
   float indexFloat = WavetableGenerator::map(sample, -1.0f, 1.0f, 0.0f, (float) (BUFFER_SIZE - 1));
   int index = (int) indexFloat;
+  int indexPlusOne = index + 1;
   float normValue = indexFloat - index;
   // std::cout << "normaalvalue:;  " <<  index << ", " << indexFloat << ", " << normValue << std::endl;
   // TODO - interpolate
-  output = WavetableGenerator::mapLin(normValue, buffer[index], buffer[index+1]);
-  std::cout << "this is the output: " << buffer[index] << ", " << output << std::endl;
+  output = WavetableGenerator::mapLin(normValue, buffer[index], buffer[indexPlusOne]);
+  std::cout << "this is the output: " << buffer[index] << ", " << buffer[indexPlusOne] << ", " << output << std::endl;
   // output = buffer[index];
 #else
   static float k = 10.0f;
