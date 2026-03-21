@@ -12,6 +12,9 @@ WaveShaper::WaveShaper(float dryWet) : Effect(dryWet) {
 
 WaveShaper::~WaveShaper() {}
 
+void WaveShaper::changeCurveK(float k) {
+  WavetableGenerator::generateSCurve(buffer, BUFFER_SIZE, k);
+}
 
 void WaveShaper::applyEffect(const float &input, float &output)
 {
@@ -23,11 +26,7 @@ void WaveShaper::applyEffect(const float &input, float &output)
   int index = (int) indexFloat;
   int indexPlusOne = index + 1;
   float normValue = indexFloat - index;
-  // std::cout << "normaalvalue:;  " <<  index << ", " << indexFloat << ", " << normValue << std::endl;
-  // TODO - interpolate
   output = WavetableGenerator::mapLin(normValue, buffer[index], buffer[indexPlusOne]);
-  std::cout << "this is the output: " << buffer[index] << ", " << buffer[indexPlusOne] << ", " << output << std::endl;
-  // output = buffer[index];
 #else
   static float k = 10.0f;
   static float normalizeFactor = 1.0f / atan(k);

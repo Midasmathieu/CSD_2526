@@ -52,7 +52,6 @@ void WavetableGenerator::generateSCurve(float* buffer, int bufSize, float k)
     float x = map((float)i, 0, bufSize, -1.0f, 1.0f);
     // formula: Pirkle 2013, "Designing Audio Effect Plug-ins in C++" p. 497
     buffer[i] = normalizeFactor * atan(k * x);
-    std::cout << "buffetje " << buffer[i] << std::endl;
   }
 }
 
@@ -65,7 +64,6 @@ float WavetableGenerator::map(const float value, float fromLow, float fromHigh, 
   float diffTHL = toHigh - toLow;
   float rc = diffTHL / diffFHL;
   float output = (value - fromLow) * rc + toLow;
-  // std::cout << "proportions: " << output << std::endl;
   return output;
 }
 

@@ -7,6 +7,7 @@ class WaveShaper : public Effect{
 public:
   WaveShaper(float dryWet = 1.0);
   ~WaveShaper();
+  void changeCurveK(float k);
 
   // override base class method
   // applies tremolo effect to the input frame

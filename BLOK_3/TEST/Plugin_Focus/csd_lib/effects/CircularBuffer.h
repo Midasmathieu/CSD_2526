@@ -36,12 +36,18 @@ class CircularBuffer {
 
   void smoothGrain();
 
+  void smoothGrain2();
+
   void calculateGrainStep(int parameterGrainSize);
+
+  void calculateGrainStep2(int parameterGrainSize);
+
 
  private:
   void calculateReadH();
   void incrWriteH();
   void incrPhase();
+  void incrGrainPhase(float& phase, float stepValue);
   void wrapH(int& head);
   // void revWrapH(int& head);
 
@@ -53,11 +59,14 @@ class CircularBuffer {
   int m_timer = { 0 };
   bool move = false;
   int incrValue = 0;
-  int parameterGrainSize;
+  int parameterGrainSize = 400;
   // int m_parameterGrainSize;
   int m_grainSize =  48000;
   float m_headPhase = 0.0;
   float m_headPhase2 = 0.5f;
+  float m_grainPhase = 0.0f;
+  float stepValue;
+  int difference = parameterGrainSize - m_grainSize;
   int m_sampleRate = 48000;
   float m_phaseStep; //= 1/(m_sampleRate * m_grainSize);
   float* m_buffer;
