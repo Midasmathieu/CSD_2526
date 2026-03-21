@@ -10,6 +10,26 @@ public:
   virtual float process(float input) = 0;
 };
 
+class OnePole : public Filter {
+ public:
+  float process(float input) override {
+    output = input * a0 + delay1 * b1;
+    delay1 = input;
+    return output;
+  }
+
+  void setCoefficient(float coefficient1, float coefficient2) {
+    a0 = coefficient1;
+    b1 = coefficient2;
+  }
+
+ private:
+  float delay1 = 0;
+  float a0 = 0;
+  float b1 = 0;
+  float output;
+};
+
 
 class Biquad :  public Filter {
 public:

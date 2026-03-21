@@ -85,7 +85,7 @@ void CircularBuffer::generateEnvelope()
   int rampTime = 512;
   float rc = 1.0/rampTime;
   for (int i = 0; i < 1025; i++) {
-    std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
+    // std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
   }
 
   for (int i = 0; i < 512; i++) {
@@ -96,7 +96,7 @@ void CircularBuffer::generateEnvelope()
     m_envelope[j] = release;
   }
   for (int i = 0; i < 1025; i++) {
-    std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
+    // std::cout << "envelp " << i << ": " << m_envelope[i] << std::endl;
   }
 }
 
@@ -120,10 +120,10 @@ void CircularBuffer::smoothGrain()
   if (move) {
     m_grainSize += incrValue;
     m_calculatePhaseStep();
-    std::cout << m_grainSize << ", ";
+    // std::cout << m_grainSize << ", ";
     int variable1 = parameterGrainSize - m_grainSize;
     int variable2 = abs(variable1);
-    std::cout << "absolute::::::::::::: " << variable2 << std::endl;
+    // std::cout << "absolute::::::::::::: " << variable2 << std::endl;
     if (variable2 < 10) {
       move = false;
       std::cout << "moved grainSize!!!" << m_grainSize << std::endl << std::endl;

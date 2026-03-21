@@ -52,36 +52,30 @@ void WavetableGenerator::generateSCurve(float* buffer, int bufSize, float k)
     float x = map((float)i, 0, bufSize, -1.0f, 1.0f);
     // formula: Pirkle 2013, "Designing Audio Effect Plug-ins in C++" p. 497
     buffer[i] = normalizeFactor * atan(k * x);
+    std::cout << "buffetje " << buffer[i] << std::endl;
   }
 }
 
-/*
- * NOTE: the function below is a placeholder function!
- * TODO: please remove these and use your own map range function from your
- * Interpolation class.
- */
 float WavetableGenerator::map(const float value, float fromLow, float fromHigh, float toLow,
  float toHigh)
 {
   // formula for lin interpolation from https://en.wikipedia.org/wiki/Interpolation
-  float partial = (value - fromLow) / (fromHigh - fromLow);
-  float delta = toHigh - toLow;
 
-  return toLow + delta * partial;
+  float diffFHL = fromHigh - fromLow;
+  float diffTHL = toHigh - toLow;
+  float rc = diffTHL / diffFHL;
+  float output = (value - fromLow) * rc + toLow;
+  // std::cout << "proportions: " << output << std::endl;
+  return output;
 }
 
-/*
- * NOTE: the function below is a placeholder function!
- * TODO: please remove these and use your own map linear function from your
- * Interpolation class.
- */
 float WavetableGenerator::mapLin(float normValue, float low, float high)
 {
   if(normValue < 0 || normValue > 1) {
     throw "WavetableGenerator::mapLin - value is not a normalized value";
   }
-  // apply linear mapping
   // low + (high - low) * valueBehindComma
-  float delta = high - low;
-  return (normValue * delta) + low;
+  float first  = low * normValue;
+  float second = high * (1-normValue);
+  return (first + second) * 0.5f;
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include "waveShaper.h"
-#include "delay.h"
 #include "CircularBuffer.h"
 #include "Filters.h"
 #include <juce_audio_processors/juce_audio_processors.h>
@@ -16,7 +15,7 @@ class EffectsChain {
         circularBuffer.m_calculatePhaseStep();
         circularBuffer.generateEnvelope();
         circularBuffer.setGrainSize(24000);
-        filter.calculateCoefficients(2000.0f, 120.0f);
+        filter.calculateCoefficients(2000.0f, 6.0f);
     }
 
 
@@ -29,12 +28,14 @@ class EffectsChain {
                 circularBuffer.tick();
                 circularBuffer.smoothGrain();
                 float tempInput = inputChannel[sample];
-                circularBuffer.write(tempInput * 0.5 + filteredOutput * 2.0);
+                circularBuffer.write(tempInput * 0.5 + shapedOutput * 0.01);
                 // std::cout << tempInput << std::endl;
                 sampletje = circularBuffer.read();
-                filteredOutput = filter.process(sampletje);
-                filteredOutput = sampletje * 0.5 + tempInput * 0.5;
-                outputChannel[sample] = filteredOutput;
+                // filteredOutput = filter.process(sampletje);
+                filteredOutput = filter.process(tempInput);
+                waveShaper.applyEffect(tempInput, shapedOutput);
+                outputChannel[sample] = shapedOutput;
+                // outputChannel[sample] = filteredOutput;
                 // std::cout << sampletje << std::endl;
             }
         }
@@ -42,10 +43,13 @@ class EffectsChain {
 
     void setParameter(float parameter){
         if(prevParameter != parameter){
-          // static_cast fuckt dingen op in classes gebruik iets anders
           int delayTime = parameter * 95000.0 + 2000.0;
           std::cout << "grainsize:::::: " << delayTime << std::endl;
           circularBuffer.calculateGrainStep(delayTime);
+          float frequency = parameter * -4000.0f + 4700.0f;
+          float que = parameter * 4.0f + 4.0f;
+          filter.calculateCoefficients(frequency, que);
+
         }
 
         prevParameter = parameter;
@@ -55,10 +59,10 @@ class EffectsChain {
   float  prevParameter = -1;
   float sampletje;
   float filteredOutput;
-  // WaveShaper waveShaper;
-  // Delay delay;
+  WaveShaper waveShaper;
   float tempSample;
   CircularBuffer circularBuffer;
   PirkleBiquad filter;
   float feedback;
+  float shapedOutput;
 };

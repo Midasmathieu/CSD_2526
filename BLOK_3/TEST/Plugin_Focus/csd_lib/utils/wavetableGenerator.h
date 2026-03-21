@@ -25,14 +25,10 @@ public:
   //    k > 1, more 'curvy'
   //    k > 100, "square-like"
   static void generateSCurve(float* buffer, int bufSize, float k);
-  /*
-   * NOTE: the functions below are placeholder functions!
-   * TODO: please remove these and use your own map range function from your
-   * Interpolation class within the wavetableGenerator.cpp file.
-   */
-   static float map(const float value, float fromLow, float fromHigh, float toLow,
+
+  static float map(const float value, float fromLow, float fromHigh, float toLow,
     float toHigh);
-   static float mapLin(float normValue, float low, float high);
+  static float mapLin(float normValue, float low, float high);
 
 private:
   // hide default constructor
