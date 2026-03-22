@@ -29,14 +29,14 @@ class EffectsChain {
                 circularBuffer.tick();
                 float tempInput = inputChannel[sample];
                 // circularBuffer.write(tempInput * 0.5 + shapedOutput * 0.01);
-                circularBuffer.write(tempInput);
+                circularBuffer.write(tempInput + shapedOutput *0.1);
 
                 // std::cout << tempInput << std::endl;
                 sampletje = circularBuffer.read();
                 // filteredOutput = filter.process(sampletje);
-                filteredOutput = filter.process(tempInput);
-                waveShaper.applyEffect(tempInput, shapedOutput);
-                outputChannel[sample] = sampletje + tempInput;
+                filteredOutput = filter.process(sampletje);
+                waveShaper.applyEffect(filteredOutput, shapedOutput);
+                outputChannel[sample] = shapedOutput + tempInput;
                 // outputChannel[sample] = filteredOutput;
                 // std::cout << sampletje << std::endl;
             }
@@ -49,10 +49,10 @@ class EffectsChain {
           int grainSizetje = static_cast<int>(delayTime);
           std::cout << "grainsize:::::: " << grainSizetje << std::endl;
           circularBuffer.calculateGrainStep(delayTime);
-          float frequency = parameter * -4000.0f + 4700.0f;
-          float que = parameter * 4.0f + 4.0f;
+          float frequency = parameter * -3000.0f + 3300.0f;
+          float que = parameter + 3.0f;
           filter.calculateCoefficients(frequency, que);
-          float k = parameter * 50 + 10;
+          float k = parameter * 10 + 2;
           waveShaper.changeCurveK(k);
 
         }
