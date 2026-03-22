@@ -122,7 +122,7 @@ void CircularBuffer::calculateGrainStep(int parameter)
   // int parameterGrainSize = parameter;
   difference = parameter - m_grainSize;
   std::cout << "parameterGrainSize : " << parameter << "  grainSize : " << m_grainSize << "difference : " << difference << std::endl;
-  stepValue = 0.0001;
+  stepValue = 0.00005;
   m_tempGrainSize = m_grainSize;
   m_grainPhase = 0;
 
