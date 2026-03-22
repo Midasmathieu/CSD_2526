@@ -76,6 +76,7 @@ void CircularBuffer::setGrainSize(int grainSize)
 {
   m_grainSize = grainSize;
   m_calculatePhaseStep();
+  std::cout << "----------- GRAINSIZE = " << m_grainSize << " ------------------" << std::endl;
 }
 
 void CircularBuffer::generateEnvelope()
@@ -117,20 +118,26 @@ float CircularBuffer::calculateAmp(float phase)
 
 void CircularBuffer::calculateGrainStep(int parameter)
 {
+  std::cout << "parameterGrainSize : " << parameter << "  grainSize : " << m_grainSize << std::endl;
   // int parameterGrainSize = parameter;
   difference = parameter - m_grainSize;
-  stepValue = 1.0/1000.0;
+  std::cout << "parameterGrainSize : " << parameter << "  grainSize : " << m_grainSize << "difference : " << difference << std::endl;
+  stepValue = 0.0001;
+  m_tempGrainSize = m_grainSize;
+  m_grainPhase = 0;
+
   move = true;
-  std::cout << "incrvalue::: " << difference << std:: endl;
+  // std::cout << "incrvalue::: " << difference << std:: endl;
 }
 
 void CircularBuffer::smoothGrain()
 {
   if (move) {
     m_grainPhase += stepValue;
-    std::cout << "phaaseee::::: " << m_grainPhase << std::endl;
+    // std::cout << "phaaseee::::: " << m_grainPhase << std::endl;
+    std::cout << "graaain: " << m_grainSize << "phaseguy: " << m_grainPhase << "    adding: " << m_grainPhase * difference << std::endl;
     // std::cout << "test1";
-    m_grainSize += m_grainPhase * difference;
+    m_grainSize = m_tempGrainSize + m_grainPhase * difference;
     // std::cout << "test2";
     m_calculatePhaseStep();
     // std::cout << "test3";
@@ -138,10 +145,10 @@ void CircularBuffer::smoothGrain()
 
     // std::cout << "absolute::::::::::::: " << variable2 << std::endl;
     if (m_grainPhase >= 1.0) {
-      m_grainPhase -= 1.0;
+      m_grainPhase = 0;
       move = false;
       std::cout << std::endl;
-      std::cout << "moved grainSize!!!" << m_grainSize << std::endl << std::endl;
+      std::cout << "moved grainSize!!!" << m_grainSize << "resetphase: " << m_grainPhase << std::endl << std::endl;
     }
   }
   // setGrainSize(parameterGrainSize);
@@ -176,11 +183,11 @@ void CircularBuffer::calculateReadH()
 {
   float backward  = m_headPhase * static_cast<float>(m_grainSize)*2;
   float backward2 = m_headPhase2 * static_cast<float>(m_grainSize)*2;
-  m_readH  = m_writeH - m_distanceRW - backward;
+  m_readH  = m_writeH - m_distanceRW - (float) backward;
   m_readH2 = m_writeH - m_distanceRW - backward2;
   wrapH(m_readH);
   wrapH(m_readH2);
-  std::cout << "readheads: " << m_readH << ", " << m_readH2 << std::endl;
+  // std::cout << "readheads: " <<  m_writeH << ", " << m_readH << ", " << m_readH2 << std::endl;
 }
 
 void CircularBuffer::incrWriteH()
@@ -199,8 +206,9 @@ void CircularBuffer::incrPhase()
 
 void CircularBuffer::wrapH(int& head)
 {
-  if (head > m_size) { head -= m_size; }
-  else if (head < 0) { head += m_size; //std::cout << "minuminus" << head;
+  if (head > m_size) { head -= m_size; // std::cout << "plusplu:  " << head;
+  }
+  else if (head < 0) { head += m_size; // std::cout << "minuminus:  " << head;
   }
 }
 

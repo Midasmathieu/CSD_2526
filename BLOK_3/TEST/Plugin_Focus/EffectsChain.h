@@ -14,7 +14,7 @@ class EffectsChain {
         circularBuffer.setDistanceRW(200);
         circularBuffer.m_calculatePhaseStep();
         circularBuffer.generateEnvelope();
-        // circularBuffer.setGrainSize(24000);
+        circularBuffer.setGrainSize(24000);
         filter.calculateCoefficients(2000.0f, 6.0f);
     }
 
@@ -45,8 +45,9 @@ class EffectsChain {
 
     void setParameter(float parameter){
         if(prevParameter != parameter){
-          int delayTime = parameter * 95000.0 + 2000.0;
-          std::cout << "grainsize:::::: " << delayTime << std::endl;
+          float delayTime = parameter * 95000.0 + 2000.0;
+          int grainSizetje = static_cast<int>(delayTime);
+          std::cout << "grainsize:::::: " << grainSizetje << std::endl;
           circularBuffer.calculateGrainStep(delayTime);
           float frequency = parameter * -4000.0f + 4700.0f;
           float que = parameter * 4.0f + 4.0f;
