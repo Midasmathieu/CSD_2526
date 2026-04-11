@@ -13,17 +13,17 @@ class CircularBuffer : public Effect
   ~CircularBuffer();
   void applyEffect(const float& input, float& output);
   void resetSize(int size);
+  void prepare(float samplerate);
   void setDistanceRW(int distanceRW);
   void setGrainSize(int grainSize);
   void generateEnvelope();
-  void calculateGrainStep(int parameterGrainSize);
+  void setGrainReadDestination(int parameterGrainSize);
 
 
  private:
   void calculateReadH(float& phase, int& head);
   void incrWriteH();
   void incrPhase(float& phase);
-  void incrGrainPhase(float& phase, float stepValue);
   void wrapH(int& head);
   void write(float input);
   void m_calculatePhaseStep();
@@ -49,9 +49,9 @@ class CircularBuffer : public Effect
   float m_headPhase2 = 0.5f;
   float m_grainPhase = 0.0f;
   float stepValue;
-  int difference = 0;
-  int m_sampleRate = 48000;
-  float m_phaseStep; //= 1/(m_sampleRate * m_grainSize);
+  int m_difference = 0;
+  int m_sampleRate;
+  float m_phaseStep; 
   float* m_buffer;
   float* m_envelope;
 };

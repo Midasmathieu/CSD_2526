@@ -1,83 +1,29 @@
-//
-// Created by Dean on 27/02/2024.
-//
+
 #include <iostream>
 #include "math.h"
+#include "effect.h"
 #pragma once
 
-class Filter {
-public:
-  virtual float process(float input) = 0;
-};
-
-class OnePole : public Filter {
+class Biquad : public Effect
+{
  public:
-  float process(float input) override {
-    output = input * a0 + delay1 * b1;
-    delay1 = input;
-    return output;
-  }
 
-  void setCoefficient(float coefficient1, float coefficient2) {
-    a0 = coefficient1;
-    b1 = coefficient2;
-  }
+   void prepare(float samplerate) {
+     m_sampleRate = samplerate;
+   }
 
- private:
-  float delay1 = 0;
-  float a0 = 0;
-  float b1 = 0;
-  float output;
-};
-
-
-class Biquad :  public Filter {
-public:
-  float process(float input) override {
+// calculates the biquad output, audio flow based on the transposed canonical form
+  void applyEffect(const float& input, float& output)
+  {
     // y[n] = b0X[n] + b1X[n-1] + b2X[n-2] - a1Y[n-1] - a2Y[n-2]
-    float output = input * b0 + sample1;
+    output = input * b0 + sample1;
     sample1 = sample2 + input * b1 - output * a1;
     sample2 = input * b2 - output * a2;
-    return output;
   }
 
+// calculates the coefficients of the biquad based on the frequency and q factor
   void calculateCoefficients(float f0, float q) {
-    float w0 = 2.0f*M_PI*f0/static_cast<float>(48000);
-    float cosW0 = cos(w0);
-    float sinW0 = sin(w0);
-    float alfa = sinW0/(2.0f*q);
-    b1 = 1.0f-cosW0;
-    b0 = b1*0.5f;
-    b2 = b0;
-    a0 = 1.0f+alfa;
-    a1 = -2.0f*cosW0;
-    a2 = 1.0f-alfa;
-  }
-
-private:
-  float a0 = { 0.0f };
-  float a1 = { 0.0f };
-  float a2 = { 0.0f };
-  float b0 = { 0.0f };
-  float b1 = { 0.0f };
-  float b2 = { 0.0f };
-  float sample1 = { 0.0f };
-  float sample2 = { 0.0f };
-};
-
-
-class PirkleBiquad :  public Filter {
-public:
-  float process(float input) override {
-    // y[n] = b0X[n] + b1X[n-1] + b2X[n-2] - a1Y[n-1] - a2Y[n-2]
-    float output = input * b0 + sample1;
-    sample1 = sample2 + input * b1 - output * a1;
-    sample2 = input * b2 - output * a2;
-    return output;
-  }
-
-  void calculateCoefficients(float f0, float q) {
-    float w0 = 2.0f*M_PI*f0/static_cast<float>(48000);
+    float w0 = 2.0f*M_PI*f0/m_sampleRate;
     float d = 1/q;
     float sinW0 = sin(w0);
     float b = 0.5*(1-(d/2)*sinW0)/(1+(d/2)*sinW0);
@@ -97,4 +43,5 @@ private:
   float b2 = { 0.0f };
   float sample1 = { 0.0f };
   float sample2 = { 0.0f };
+  float m_sampleRate;
 };

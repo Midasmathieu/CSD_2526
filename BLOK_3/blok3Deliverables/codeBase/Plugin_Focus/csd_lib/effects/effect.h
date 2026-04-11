@@ -8,7 +8,7 @@ public:
   // 0 < drywet < 1:  mix
   // drywet == 1:     wet
   // default is wet
-  Effect(float dryWet = 0.0);
+  Effect(float dryWet = 1.0);
   virtual ~Effect();
 
   // not pure virtual, since not all subclasses require the samplerate

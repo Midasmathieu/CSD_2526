@@ -10,14 +10,17 @@ class EffectsChain
  public:
   EffectsChain() {}
   void prepareToPlay(float sampleRate, int numSamplesPerBlock){
+    m_sampleRate = sampleRate;
     std::cout << sampleRate << std::endl;
-    circularBuffer.resetSize(192000);
+    circularBuffer.prepare(sampleRate);
+    circularBuffer.resetSize(4*m_sampleRate);
     circularBuffer.setDistanceRW(200);
     // circularBuffer.m_calculatePhaseStep();
     circularBuffer.generateEnvelope();
     // circularBuffer.setGrainSize(24000);
     filter.calculateCoefficients(2000.0f, 6.0f);
     circularBuffer.setDryWet(0.0f);
+    filter.prepare(sampleRate);
 }
 
 
@@ -39,6 +42,8 @@ class EffectsChain
       // sampletje = circularBuffer.read();
       // // filteredOutput = filter.process(sampletje);
       // filteredOutput = filter.process(sampletje * 0.5 + tempInput * 0.5);
+      // filter.processFrame(inputChannel[sample], outputChannel[sample]);
+
       // waveShaper.applyEffect(filteredOutput, shapedOutput);
       circularBuffer.processFrame(inputChannel[sample], outputChannel[sample]);
 
@@ -54,15 +59,16 @@ class EffectsChain
   {
     if(prevParameter != parameter)
     {
-      float delayTime = parameter * 48000.0 + 24000.0;
+      float delayTime = parameter * m_sampleRate + m_sampleRate/2;
       int grainSizetje = static_cast<int>(delayTime);
-      circularBuffer.calculateGrainStep(delayTime);
+      circularBuffer.setGrainReadDestination(delayTime);
       float frequency = (1-parameter) * (1-parameter) *  4000.0f + 400.0f;
       float que = parameter * parameter * 2.0f + 1.0f;
       filter.calculateCoefficients(frequency, que);
       float k = parameter * -2.5f + 6.0f;
       waveShaper.changeCurveK(k);
       circularBuffer.setDryWet(parameter);
+      // filter.setDryWet(1.0);
     }
     prevParameter = parameter;
   }
@@ -74,7 +80,9 @@ class EffectsChain
   WaveShaper waveShaper;
   float tempSample;
   CircularBuffer circularBuffer;
-  PirkleBiquad filter;
   float feedback;
   float shapedOutput;
+  float m_sampleRate;
+  Biquad filter;
+
 };
