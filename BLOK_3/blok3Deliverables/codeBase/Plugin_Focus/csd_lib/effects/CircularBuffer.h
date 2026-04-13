@@ -51,7 +51,7 @@ class CircularBuffer : public Effect
   float stepValue;
   int m_difference = 0;
   int m_sampleRate;
-  float m_phaseStep; 
+  float m_phaseStep;
   float* m_buffer;
   float* m_envelope;
 };

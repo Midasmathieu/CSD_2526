@@ -10,7 +10,6 @@ public:
   void changeCurveK(float k);
 
   // override base class method
-  // applies tremolo effect to the input frame
   void applyEffect(const float& input, float& output) override;
 
 private:

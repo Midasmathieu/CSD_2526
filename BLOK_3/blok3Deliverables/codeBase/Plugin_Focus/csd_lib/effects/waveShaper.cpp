@@ -14,6 +14,8 @@ WaveShaper::~WaveShaper() {}
 
 void WaveShaper::changeCurveK(float k) {
   WavetableGenerator::generateSCurve(buffer, BUFFER_SIZE, k);
+  std::cout << "bufferzero:" << buffer[256] << std::endl;
+  float motionnn = WavetableGenerator::map(0, -1.0f, 1.0f, 0.0f, (float) (BUFFER_SIZE));
 }
 
 void WaveShaper::applyEffect(const float &input, float &output)
