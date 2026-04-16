@@ -18,72 +18,28 @@ class EffectsChain
     circularBuffer[0].resetSize(4*m_sampleRate);
     circularBuffer[1].resetSize(4*m_sampleRate);
 
-    circularBuffer[0].setDistanceRW(200);
-    circularBuffer[1].setDistanceRW(200);
-
-    // circularBuffer.m_calculatePhaseStep();
-    circularBuffer[0].generateEnvelope();
-    circularBuffer[1].generateEnvelope();
-
-    // circularBuffer.setGrainSize(24000);
     filter[0].calculateCoefficients(2000.0f, 6.0f);
     filter[1].calculateCoefficients(2000.0f, 6.0f);
-
-    // circularBuffer[0].setDryWet(0.0f);
-    // circularBuffer[1].setDryWet(0.0f);
 
     filter[0].prepare(sampleRate);
     filter[1].prepare(sampleRate);
 }
 
 
-  // void getNextBlock(juce::AudioBuffer<float>& buffer)
-  // {
-  //   // Your DSP goes here
-  //   //for(int channel = 0; channel < buffer.getNumChannels(); ++channel){
-  //   auto* inputChannel = buffer.getReadPointer(0);
-  //   auto* outputChannel = buffer.getWritePointer(0);
-  //   for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-  //   {
-  //     // float tempInput = inputChannel[sample];
-  //     // // circularBuffer.write(tempInput * 0.5 + shapedOutput * 0.01);
-  //     // circularBuffer.write(shapedOutput * 0.3);
-  //     // // std::cout << tempInput << std::endl;
-  //     // sampletje = circularBuffer.read();
-  //     // // filteredOutput = filter.process(sampletje);
-  //     // filteredOutput = filter.process(sampletje * 0.5 + tempInput * 0.5);
-  //
-  //
-  //     waveShaper.processFrame(inputChannel[sample]+outputDelay*0.5, outputWaveShaper);
-  //     filter.processFrame(outputWaveShaper*0.3, outputFilter);
-  //     circularBuffer.processFrame(outputFilter, outputDelay);
-  //
-  //     outputChannel[sample] = outputFilter;
-  //     //outputChannel[sample] = shapedOutput + tempInput;
-  //     // outputChannel[sample] = shapedOutput;
-  //     // std::cout << sampletje << std::endl;
-  //     }
-  //   }
-// }
-
 
 
 void getNextBlock(juce::AudioBuffer<float>& buffer){
-        // Your DSP goes here
-//TODO: fix dual mono!
-        for(int channel = 0; channel < buffer.getNumChannels(); ++channel){
-            auto* inputChannel = buffer.getReadPointer(channel);
-            auto* outputChannel = buffer.getWritePointer(channel);
-            for (int sample = 0; sample < buffer.getNumSamples(); ++sample){
-              waveShaper.processFrame(inputChannel[sample]+outputDelay[channel]*0.5, outputWaveShaper[channel]);
-              filter[channel].processFrame(outputWaveShaper[channel]*0.3, outputFilter[channel]);
-              circularBuffer[channel].processFrame(outputFilter[channel], outputDelay[channel]);
-              outputChannel[sample] = outputFilter[channel];
-            }
-        }
-
-
+  for(int channel = 0; channel < buffer.getNumChannels(); ++channel){
+    auto* inputChannel = buffer.getReadPointer(channel);
+    auto* outputChannel = buffer.getWritePointer(channel);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample){
+      waveShaper.processFrame(inputChannel[sample]+outputDelay[channel]*0.5, outputWaveShaper[channel]);
+      filter[channel].processFrame(outputWaveShaper[channel]*0.3, outputFilter[channel]);
+      circularBuffer[channel].processFrame(outputFilter[channel], outputDelay[channel]);
+      outputChannel[sample] = outputFilter[channel];
     }
+  }
+}
 
   void setParameter(float parameter)
   {

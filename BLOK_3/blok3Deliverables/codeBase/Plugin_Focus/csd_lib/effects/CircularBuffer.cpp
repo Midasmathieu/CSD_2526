@@ -18,6 +18,7 @@ CircularBuffer::~CircularBuffer()
 
 void CircularBuffer::prepare(float samplerate) {
   m_sampleRate = samplerate;
+  generateEnvelope();
 }
 
 // applies effect

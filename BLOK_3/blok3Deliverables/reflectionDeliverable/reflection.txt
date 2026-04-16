@@ -1,0 +1,29 @@
+Leerdoelen:
+  De CSD’er kan stapsgewijs aan afgebakende onderdelen van het ontwerp,
+  systeem en implementatie werken.
+
+  De CSD'er haalt geen eigenwaarden uit hoe ver zij/hen/hij in het project is
+  en klapt niet dicht als zij/hen/hij achterloopt. Dit doet zij/hen/hij door
+  transparant te zijn over hoe ver die is en op school te werken.
+
+reflectie: 
+Deze periode ging het ontwerp proces niet super, ik had snel een idee van wat ik wilde en had ook een audio flow ontworpen. Mijn class diagram daarentegen was zeer basaal en niet heel goed uitgewerkt waar ik tijdens het schrijven van de code tegenaan zou lopen. Ook had ik geen pseudocode geschreven, niet helemaal top dus. Ik merkte tijdens het schrijven van de code dat ik niet goed wist wat voor berekeningen wel en niet op audio rate kunnen worden uitgevoerd. Ik snap dat breuken het beste kunnen worden vermijd maar ik durfde eerst soms ook geen keersommen te maken etc omdat dat bad practice zou kunnen zijn. Gelukkig kreeg ik in de lessen uiteindelijk wel door dat dat reuze mee viel. Ik liep af en toe ook tegen mijn achterstand van vorig blok aan, ik heb zo min mogelijk met object oriented gewerkt omdat ik nog niet alles snap en als ik kijk naar voorbeeld code kan ik het wel volgen maar niet reproduceren. Er valt dus echt nog flink wat kennis in te halen. 
+
+Ik heb afgelopen periode een eindsprint ingecalculeerd, ik heb gezorgd dat de laatste drie weken voor de deadline door de weeks vrij waren om te kunnen werken. Ik heb in die drie weken minimaal 5 uur per dag aan mijn codebase gewerkt en zo in redelijk korte tijd het grootste deel van mijn code heb geschreven. Ik wist goed in de hyperfocus te komen door mijzelf verplicht in de coding space te laten zijn. Door eerst een beetje te onderzoeken en de gegeven code aan te passen en het daarna over te typen raakte ik geïnteresseerd en kon ik me er volledig in storten. De drie weken aan intensief werk waren niet perse intens of stressvol maar ik merkte wel dat ik compleet geobsedeerd was met de plugin schrijven. Dit is een beetje een drawback van de hyperfocus: al het andere om je heen verdwijnt, huisgenoten zagen me die 3 weken niet en emotioneel en sociaal was ik compleet afgevlakt. Daartegenover stond dat ik wel een voldaan gevoel had en betekenis (purpose) voelde bij het werk dat ik verrichte (wat niet perse top is mbt mijn tweede leerdoel). Ik merk dat een paar dagen achter elkaar aan code zitten erg nuttig is omdat je dan een stuk code volledig in dezelfde headspace kan schrijven en makkelijk kan voortborduren op wat je in je laatste sessie had gedaan. Wel wordt het moeilijker een stap terug te nemen en te kijken naar wat je hebt en mogelijk outside of the box te denken. Het zou voor mij nut hebben om een aantal dagen achter elkaar aan project te werken en daarna een paar dagen pauze te pakken van dat project. 
+
+Het is me gelukt om stapsgewijs door het design proces heen te gaan, wel heb ik na alles te implementeren volgens het design, een aantal dingen in het design aangepast maar ik tel dat zelf als iteratie. Sommige delen van het design waren niet goed uitgedacht, bij het schrijven van de delay liep ik daar tegenaan. Door mijn reverse delay te laten zien in de les kreeg ik als feedback om de code om te gooien en een ander ontwerp uit te werken. Wel bleef ook hier het designproces en het code schrijven netjes los van elkaar. 
+
+Ook ben ik naar mijn eigen idee aardig goed in contact gebleven met de docenten over hoe het er voor stond in het project, feedback in de les hielp me enorm om me uit mijn box te duwen en het design beter te integreren (zoals eerder al benoemd). Mijn productiviteit staat wel nog steeds gelinkt aan mijn eigenwaarde dus wat dat betreft ben ik niet veel vooruit maar ik zou niet zo goed weten hoe ik dat kan aanpakken zonder grandioos per opzet te falen. 
+
+
+Takeaways:
+	- Kom in de hyperfocus door jezelf te forceren om op een werk plek te zijn zonder dat je perse iets hoeft te doen.
+	- Werk een paar dagen achter elkaar aan een project en neem dan een paar dagen rust van het project om fris terug te komen.
+	- Neem niet te veel (werk) diensten door de weeks als je het kan veroorloven. 
+	- Blijf goed in contact met je docenten, feedback is super waardevol.
+	- Denk na voor je ja zegt tegen een groot project, plan tijd in.
+	- Werk met to do lijsten die je fysiek kan afstrepen om orde te houden over wat je moet doen.
+	- Schat de tijd in die je denkt nodig te hebben voor iets en doe het keer twee voor een realistischere inschatting. 	
+
+
+

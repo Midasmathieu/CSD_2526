@@ -1,0 +1,67 @@
+sla een envelope op in een buffer. 
+
+werk met een fase voor je delaytijd
+maak een slope voor je delaytijd
+
+zorg dat je fase voor de delaytijd een slope heeft om door de buffer heen te gaan dus 0 = buffer index 0 en 1 = buffer index 1024 
+
+vermenigvuldig elke sample die je leest steeds met de buffer op dat moment. 
+
+neem een delay variable
+stel een formule op voor de readhead bestaande uit readH = writeH - delaytijd - fase*slope. 
+
+
+
+door de readhead te bepalen aan de hand van de write head kun je makkelijk het pitch effect van de delaytijd aanpassen horen.
+De pitch zal wel andersom veranderen dan bij een normaal delay, omdat een grotere delaytijd instellen 
+de readhead terug in de tijd zal zetten en dat is dezelfde richting op als waar hij al las, stapgrootte wordt dan groter, dus de pitch hoger. 
+
+de interpolatie die gebeurt tussen samples is linear. 
+neem de float readHpos en static_cast<int> 'm 
+doe vervolgens "de gecaste" - readHpos
+daar krijg je het getal achter de comma van je originele float readHpos uit.
+
+neem de readpos en de readpos erna (ervoor bij revDelay) vermenigvuldig ze met het getal achter de comma en 1- 
+het getal achter de comma, dit is je geïnterpoleerde waarde. 
+
+phase gaat 0.0 tot 1.0
+incr phase functie: phase += 1/(samplerate*line_duration)
+
+je gaat uiteindelijk met twee readheads werken, deze hoeven niet een aparte readH class te zijn. 
+
+
+schrijf ook een functie om de fase te incrementen. 
+
+
+
+
+
+het is ook nog makkelijker mogelijk zonder fase te gebruiken:
+je kunt gewoon een buffer vullen met de delay tijden en hetzelfde voor 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+verder met deze code:
+  _07_session
+  1_delay

@@ -1,0 +1,45 @@
+design plugin focus:
+Een reverse delay waarvan het signaal na een waveshaper en low pass filter terug
+wordt gevoed de delay in. De waveshaper en lowpass zitten niet enkel in de
+feedback path maar zijn direct te horen (ook de eerste delay instantie).
+De plugin draaiknop moduleert delay feedback en tijd, waveshaping intensiteit,
+filter frequency en (minimaal) de dry wet van het hele systeem.
+De bedoeling is dat het effect tussen een rustig reversed delay met minimale
+filtering en waveshaping en een chaotische donkere distorted wall of sound kan
+bewegen. Ik kies voor een reverse delay omdat het met feedback zowel forward als
+backward copies van het geluidsignaal afspeelt en dat klinkt als timestretchen.
+
+
+MUST:
+  Delay, waveshaping en biquad-filter met parameters gemapt aan de knop.
+
+SHOULD:
+  Reverse delay
+  anti aliasing
+
+COULD:
+  vibrato in de feedback path
+  stereo
+
+WONT:
+  all pass filters and fft
+
+
+Leerdoelen:
+  De CSD’er kan stapsgewijs aan afgebakende onderdelen van het ontwerp,
+  systeem en implementatie werken.
+
+  De CSD'er haalt geen eigenwaarden uit hoe ver zij/hen/hij in het project is
+  en klapt niet dicht als zij/hen/hij achterloopt. Dit doet zij/hen/hij door
+  transparant te zijn over hoe ver die is en op school te werken.
+
+
+Vorige periode ben ik veel bezig geweest met buitenschoolse projecten, dit
+zorgde er voor dat ik sporadisch door de les stof heen ging thuis en daardoor
+niet goed de basics beheerste voordat ik verder ging. Ook werkt het heen en
+weer springen tussen ontwerp systeem en implementatie erg inefficient.
+
+Toen ik eenmaal achterliep voelde het erg als falen, het presteren (en leven)
+met ADHD houd me veel bezig en ik ben me bewuster van hoe dit zich uit in
+irrationele gedachtepatronen die studeren in de weg komen te zitten. Afgelopen
+periode heb ik me erg teruggetrokken uit schaamte en dat wil ik niet herhalen.

@@ -39,7 +39,7 @@ class CircularBuffer : public Effect
   int m_readH;
   int m_readH2 = 0;
   int m_writeH = 0;
-  int m_distanceRW = 0;
+  int m_distanceRW = 200;
   int m_timer = { 0 };
   bool move = false;
   int incrValue = 0;
