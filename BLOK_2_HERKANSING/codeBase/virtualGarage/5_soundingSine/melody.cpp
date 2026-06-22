@@ -19,15 +19,20 @@ void Melody::tick()
 void Melody::wrap() 
 {
   if(clock >= 24000) 
-  { 
+  {
     clock = clock - 24000;
     noteIndex = noteIndex + 1;
-    if(noteIndex >= 7) {noteIndex = 0;}
+    if(noteIndex >= 6) {noteIndex = 0;}
     std::cout << noteIndex << std::endl;
   }
 }
 
 int Melody::getFrequency()
 {
-  return notes[noteIndex];
+  return notes[noteIndex].getMidiNoteNumber();
+}
+
+bool Melody::getNoteOnOff()
+{
+  return notes[noteIndex].getNoteOnOff();
 }

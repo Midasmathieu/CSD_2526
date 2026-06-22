@@ -4,6 +4,7 @@
 #include "square.h"
 #include "saw.h"
 #include "melody.h"
+#include "kickSynth.h"
 
 struct CustomCallback : AudioCallback {
     explicit CustomCallback (double Fs) : AudioCallback(Fs) {
@@ -24,22 +25,29 @@ struct CustomCallback : AudioCallback {
         for (int channel = 0u; channel < numOutputChannels; ++channel) {
             for (int sample = 0u; sample < numFrames; ++sample) {
                 // write sample to buffer at channel 0, amp = 0.25
-                outputChannels[channel][sample] = 0.33*sine.getSample()+0.33*square.getSample()+fifth.getSample()*0.33;
+                outputChannels[channel][sample] = //sine.getSample() * envelope.getAmplitude() + 
+                                                  kickSynth.proccesKick() * envelope.getAmplitude();
                 sine.tick();
-                square.tick();
                 melody.tick();
-                fifth.tick();
-                int freq = melody.getFrequency();
-                square.setFrequency(freq);
-                fifth.setFrequency(freq/1.5);
-                sine.setFrequency(freq/2);
+                
+                sine.calculateSample();
+                float freqi = melody.getFrequency();
+                float freq = kickSynth.mtof(freqi);
+                bool onOffNote = melody.getNoteOnOff();
+                //std::cout<<onOffNote<<std::endl;
+                envelope.tick(onOffNote);
+                sine.setFrequency(freq/16*-100*envelope.getAmplitude());
+                kickSynth.setFrequency(freq);
             }
         }
     }
 
 private:
-  Sine sine{440};
-  Saw square {220};
-  Square fifth {330};
-  Melody melody;  
+  Sine sine;
+  // Saw saw;
+  // Square square;
+  Melody melody;
+  KickSynth kickSynth;
+  Envelope envelope;
+  // float freq = kickSynth.mtof(40);
 };

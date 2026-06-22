@@ -1,32 +1,25 @@
 #ifndef _SQUARE_H_
 #define _SQUARE_H_
+#include "oscillator.h"
 #include <iostream>
 #include <cmath>
 
-class Square
+class Square : public Oscillator
 {
 public:
   //Constructor and destructor
-  Square(float frequency, float samplerate = 44100);
+  Square();
   ~Square();
-  void setSamplerate(float samplerate);
   //return the current sample
   float getSample();
   // go to next sample
-  void tick();
-
-  //getters and setters
-  void setFrequency(float frequency);
-  float getFrequency();
+  void calculateSample();
 
 private:
   const float pi = acos (-1);  //atan(1) * 4; <-- vak van Pieter.
-  float frequency;
   float amplitude;
-  float phase;
   // sample contains the current sample
-  float sample;
-  float samplerate;
+  float sample; 
 };
 
 #endif
