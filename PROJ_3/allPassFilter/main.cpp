@@ -81,7 +81,6 @@ class Allpass2 {
       numberToWrap += m_size+1;
     }
     return numberToWrap;
-    std::cout << "numbaahhh: " << numberToWrap << std::endl; 
   }
 
   void write(float input) {
