@@ -38,19 +38,22 @@ class Allpass {
 
 
 
-class Allpass2 {
+class Allpass2 
+{
  public:
   Allpass2() {
-    std::cout << "Allpass2 constructor" << std::endl;
+    std::cout << "Allpass2 constructor aaaaa" << std::endl;
     allocateBuffer();
   }
 
-  ~Allpass2() {
+  ~Allpass2() 
+  {
     std::cout << "Allpass2 destructor" << std::endl;
     releaseBuffer();
   }
 
-  void applyEffect(const float& input, float& output) {
+  void applyEffect(const float& input, float& output) 
+  {
 
     output = input * 0.167772f + read();
     write(-input + 0.167772f * output);
@@ -61,33 +64,37 @@ class Allpass2 {
     writeH = wrap(writeH + 1);
   }
 
-  void allocateBuffer() {
+  void allocateBuffer() 
+  {
     m_buffer = (float*)malloc(m_size * sizeof(float));
     memset(m_buffer, 0, m_size * sizeof(float));
     std::cout << " allocate buffer \n";
-    for ( int i = 0; i <= m_size; i++) {
-    }
   }
   void releaseBuffer() {
     std::cout << " release buffer \n";
     free(m_buffer);
   }
 
-  int wrap(int numberToWrap) {
-    if (numberToWrap > m_size) {
+  int wrap(int numberToWrap) 
+  {
+    if (numberToWrap > m_size) 
+    {
       numberToWrap -= m_size+1;
     }
-    if (numberToWrap < 0) {
+    if (numberToWrap < 0) 
+    {
       numberToWrap += m_size+1;
     }
     return numberToWrap;
   }
 
-  void write(float input) {
+  void write(float input) 
+  {
     m_buffer[writeH] = input;
   }
 
-  float read() {
+  float read() 
+  {
     return m_buffer[readH];
   }
 
