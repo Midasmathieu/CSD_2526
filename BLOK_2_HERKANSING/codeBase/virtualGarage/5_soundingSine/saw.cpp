@@ -17,6 +17,7 @@ float Saw::getSample() {
 void Saw::calculateSample() {
   // NOTE 1. - frequency / SAMPLERATE can be implemented in a more efficient way
   sample = phase*2.0-1.0;
+  std::cout << "calculateSample" << std::endl;
 }
 
 //getters and setters

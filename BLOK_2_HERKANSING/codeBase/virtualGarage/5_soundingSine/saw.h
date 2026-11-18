@@ -19,7 +19,7 @@ public:
   
 private:
   const float pi = acos (-1);  //atan(1) * 4; <-- vak van Pieter.
-  float amplitude;
+  float amplitude = 1;
   // sample contains the current sample
   float sample;
 };
